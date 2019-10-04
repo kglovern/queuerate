@@ -4,6 +4,7 @@
 
 # To run application
 1) run the command "python run.py"
+2) Application is available on localhost:8080
 
 # To run migrations
 

@@ -14,6 +14,7 @@ from app import models
 
 # Module imports - for registering blueprints
 from app.category.controllers import category_controller as category_module
+from app.keyword.controllers import keyword_controller as keyword_module
 
 main = Blueprint("main", __name__)
 
@@ -29,3 +30,4 @@ def index():
 
 app.register_blueprint(main, url_prefix='/')
 app.register_blueprint(category_module, url_prefix='/categories')
+app.register_blueprint(keyword_module, url_prefix='/keywords')

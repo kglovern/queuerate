@@ -60,9 +60,9 @@ class APIResponseBuilder:
         if type(data) == dict:
             for k, v in data.items():
                 if type(v) == list and len(v) > 0 and issubclass(type(v[0]), db.Model):
-                    data_dict[k] = [row.serialize for row in v]
+                    data_dict[k] = [row.serialized for row in v]
                 elif isinstance(v, db.Model):
-                    data_dict[k] = v.serialize
+                    data_dict[k] = v.serialized
                 else:
                     data_dict[k] = v
         return data_dict
