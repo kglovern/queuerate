@@ -9,8 +9,8 @@ class Base(db.Model):
     __abstract__ = True
 
     id = db.Column(db.Integer, primary_key=True)
-    created_at = db.Column(db.DateTime,  default=db.func.current_timestamp())
-    updated_at = db.Column(db.DateTime,  default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+    created_at = db.Column(db.DateTime,  default=db.func.now())
+    updated_at = db.Column(db.DateTime,  default=db.func.now(), onupdate=db.func.now())
 
     def serialize(self):
         """
@@ -29,6 +29,7 @@ class Category(Base):
 
     user_id = db.Column(db.String(36), nullable=False)
     category_name = db.Column(db.String(50), nullable=False)
+    is_archived = db.Column(db.Boolean, default=False)
     keywords = db.relationship('Keyword', backref='category', lazy='dynamic')
 
     def serialize(self):
@@ -36,6 +37,7 @@ class Category(Base):
             'id': self.id,
             'user_id': self.user_id,
             'category_name': self.category_name,
+            'is_archived': self.is_archived,
             'created_at': self.created_at,
             'updated_at': self.updated_at
         }
