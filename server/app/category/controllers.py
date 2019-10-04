@@ -92,6 +92,12 @@ def update_category_by_id(category_id):
 
 @category_controller.route('/<category_id>/archive', methods=['POST'])
 def archive_category_by_id(category_id):
+    """
+    Archives a specific category identified by category_id
+
+    :param category_id: ID of the Category object to be archived
+    :return: JSON response of the updated category
+    """
     # TODO: validate user ID from post param - for now we'll assume it's the correct user
     try:
         category = Category.query.get(category_id)
@@ -117,6 +123,12 @@ def archive_category_by_id(category_id):
 
 @category_controller.route('/<category_id>/unarchive', methods=['POST'])
 def unarchive_category_by_id(category_id):
+    """
+    Unarchives a specific category identified by category_id
+
+    :param category_id: ID of the category to be unarchived
+    :return: JSON object of updated Category
+    """
     # TODO: validate user ID from post param - for now we'll assume it's the correct user
     try:
         category = Category.query.get(category_id)

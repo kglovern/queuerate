@@ -12,6 +12,7 @@ class Base(db.Model):
     created_at = db.Column(db.DateTime,  default=db.func.now())
     updated_at = db.Column(db.DateTime,  default=db.func.now(), onupdate=db.func.now())
 
+    @property
     def serialize(self):
         """
         Serialize an SQLalchemy object into a dict
@@ -32,6 +33,7 @@ class Category(Base):
     is_archived = db.Column(db.Boolean, default=False)
     keywords = db.relationship('Keyword', backref='category', lazy='dynamic')
 
+    @property
     def serialize(self):
         return {
             'id': self.id,
@@ -52,8 +54,13 @@ class Keyword(Base):
 
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
     keyword = db.Column(db.String, nullable=False)
-    isExcluded = db.Column(db.Boolean, default=False)
+    is_excluded = db.Column(db.Boolean, default=False)
 
     @property
     def serialize(self):
-        pass
+        return {
+            'id': self.id,
+            'category_id': self.category_id,
+            'keyword': self.keyword,
+            'is_excluded': self.is_excluded
+        }
