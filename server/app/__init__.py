@@ -1,9 +1,6 @@
 from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-# Module imports
-from app.category.controllers import category_controller as category_module
-
 
 
 app = Flask(__name__)
@@ -15,13 +12,16 @@ migrate = Migrate(app, db)
 # import models so the migration util will pick them up
 from app import models
 
+# Module imports - for registering blueprints
+from app.category.controllers import category_controller as category_module
+
 main = Blueprint("main", __name__)
 
 
 @main.route('/')
 def index():
     """
-    Landing page for the user
+    Landing page for the user - TODO remove or replace this
     :return:
     """
     return "Hello World"
