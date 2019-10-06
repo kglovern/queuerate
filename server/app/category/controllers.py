@@ -20,9 +20,7 @@ def get_all_categories():
          "categories": categories
         })
     except SQLAlchemyError as e:
-        return APIResponseBuilder.error({
-            "message": f"Issue running query: {e}"
-        })
+        return APIResponseBuilder.error(f"Issue running query: {e}")
     except Exception as e:
         return APIResponseBuilder.error(f"Error encountered: {e}")
 
@@ -46,13 +44,9 @@ def get_category_by_id(category_id):
                 "invalid_id": f"Unable to find category with id {category_id}"
             })
     except SQLAlchemyError as e:
-        return APIResponseBuilder.error({
-            "message": f"Issue running query: {e}"
-        })
+        return APIResponseBuilder.error(f"Issue running query: {e}")
     except Exception as e:
-        return APIResponseBuilder.error({
-            "message": f"Error encountered: {e}"
-        })
+        return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
 @category_controller.route('/', methods=['POST'])
@@ -76,13 +70,9 @@ def create_new_category():
             "category": category
         })
     except SQLAlchemyError as e:
-        return APIResponseBuilder.error({
-            "message": f"Issue running query: {e}"
-        })
+        return APIResponseBuilder.error(f"Issue running query: {e}")
     except Exception as e:
-        return APIResponseBuilder.error({
-            "message": f"Error encountered: {e}"
-        })
+        return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
 @category_controller.route('/<category_id>', methods=['PATCH'])
@@ -112,13 +102,9 @@ def archive_category_by_id(category_id):
                 "invalid_id": f"Unable to find category with ID of {category_id}"
             })
     except SQLAlchemyError as e:
-        return APIResponseBuilder.error({
-            "message": f"Issue running query: {e}"
-        })
+        return APIResponseBuilder.error(f"Issue running query: {e}")
     except Exception as e:
-        return APIResponseBuilder.error({
-            "message": f"Error encountered: {e}"
-        })
+        return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
 @category_controller.route('/<category_id>/unarchive', methods=['POST'])
@@ -143,10 +129,6 @@ def unarchive_category_by_id(category_id):
                 "invalid_id": f"Unable to find category with ID of {category_id}"
             })
     except SQLAlchemyError as e:
-        return APIResponseBuilder.error({
-            "message": f"Issue running query: {e}"
-        })
+        return APIResponseBuilder.error(f"Issue running query: {e}")
     except Exception as e:
-        return APIResponseBuilder.error({
-            "message": f"Error encountered: {e}"
-        })
+        return APIResponseBuilder.error(f"Error encountered: {e}")
