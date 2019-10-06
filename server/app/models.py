@@ -70,5 +70,5 @@ class Keyword(Base):
             'id': self.id,
             'category_id': self.category_id,
             'keyword': self.keyword,
-            'is_excluded': self.is_excluded
+            'is_excluded': self.is_excluded,
         }
