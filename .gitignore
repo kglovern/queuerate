@@ -54,3 +54,9 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+
+# Frontend
+node_modules
+
+# VSCode
+.vscode/
