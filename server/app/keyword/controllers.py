@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, request
 from app.models import Keyword
 from app.services.APIResponseBuilder import APIResponseBuilder
 from sqlalchemy.exc import SQLAlchemyError
@@ -41,7 +41,23 @@ def get_keyword_by_id(keyword_id):
 
 @keyword_controller.route('/', methods=["POST"])
 def create_keyword():
-    pass
+    try:
+        # TODO: verify category belongs to passed user ID
+        data = request.form.to_dict()
+        keyword = Keyword(
+            keyword=data['keyword'],
+            is_excluded=False,
+            category_id=data['category_id']
+        )
+        db.session.add(keyword)
+        db.session.commit()
+        return APIResponseBuilder.success({
+            "keyword": keyword
+        })
+    except SQLAlchemyError as e:
+        return APIResponseBuilder.error(f"Issue running query: {e}")
+    except Exception as e:
+        return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
 @keyword_controller.route('/<keyword_id>', methods=["PATCH"])
@@ -53,9 +69,7 @@ def update_keyword_by_id(keyword_id):
 def delete_keyword_by_id(keyword_id):
     try:
         keyword = Keyword.query.filter_by(id=keyword_id).delete()
-        print(keyword)
         db.session.commit()
-        print(keyword)
         if keyword:
             return APIResponseBuilder.success({
                 "deleted": True
