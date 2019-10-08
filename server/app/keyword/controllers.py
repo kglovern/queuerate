@@ -38,7 +38,6 @@ def get_keyword_by_id(keyword_id):
         return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
-
 @keyword_controller.route('/', methods=["POST"])
 def create_keyword():
     try:
