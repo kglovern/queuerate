@@ -86,7 +86,6 @@ class Keyword(Base):
             'is_excluded': self.is_excluded,
         }
 
-
 class User(Base):
     """
     Entity representing a user
@@ -107,22 +106,36 @@ class User(Base):
             'email': self.uuid
         }
 
-
 class Link(Base):
     """
     Entity representing a link
-    Belongs to User
+    Belongs to a single user
     Belongs to many (or none) categories
     """
     __table_name__ = "Link"
 
-    url = db.Column(db.String, nullable=False)
     user_id = db.Column(db.String, db.ForeignKey('user.uuid'), nullable=False)
+    url = db.Column(db.String(1024), nullable=False)
+    link_title = db.Column(db.String(128), nullable=False)
+    link_description = db.Column(db.String(1024), nullable=False)
+    is_marked_as_read = db.Column(db.Boolean, default=False)
 
     @property
     def serialized(self):
+        categories_list = []
+        for row in self.categories:
+            categories_list.append({
+                "id": row.id,
+                "category_name": row.category_name
+            })
         return {
             'id': self.id,
+            'user_id': self.user_id,
             'url': self.url,
-            'user_id': self.user_id
+            'link_title': self.link_title,
+            'link_description': self.link_description,
+            'is_marked_as_read': self.is_marked_as_read,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at,
+            'categories': categories_list
         }
