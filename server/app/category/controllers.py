@@ -91,7 +91,7 @@ def update_category_by_id(category_id):
         category = Category.query.get(category_id)
         if category:
             category.category_name = data['category_name']
-            category.is_archived = data['is_archived']
+            #category.is_archived = data['is_archived'] or False TODO: Fix this to work
             db.session.commit()
             return APIResponseBuilder.success({
                 "category": category

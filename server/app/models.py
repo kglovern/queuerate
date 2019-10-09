@@ -86,6 +86,7 @@ class Keyword(Base):
             'is_excluded': self.is_excluded,
         }
 
+
 class User(Base):
     """
     Entity representing a user
@@ -105,6 +106,7 @@ class User(Base):
             'uuid': self.uuid,
             'email': self.uuid
         }
+
 
 class Link(Base):
     """
