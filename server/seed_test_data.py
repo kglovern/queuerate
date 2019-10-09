@@ -3,7 +3,7 @@ from app import db
 
 
 def main():
-    # add user
+# add user
     user = models.User(
         uuid='aaabbbcccddd',
         email='test@uoguelph.ca'

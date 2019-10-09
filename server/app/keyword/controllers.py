@@ -61,6 +61,7 @@ def create_keyword():
 
 @keyword_controller.route('/<keyword_id>', methods=["PATCH"])
 def update_keyword_by_id(keyword_id):
+
     pass
 
 
