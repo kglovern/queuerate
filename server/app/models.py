@@ -104,7 +104,7 @@ class User(Base):
         return {
             'id': self.id,
             'uuid': self.uuid,
-            'email': self.uuid
+            'email': self.email
         }
 
 

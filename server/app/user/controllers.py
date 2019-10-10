@@ -1,19 +1,18 @@
 from flask import Blueprint, request
-from app.models import Keyword
+from app.models import User
 from app.services.APIResponseBuilder import APIResponseBuilder
 from sqlalchemy.exc import SQLAlchemyError
 from app import db
 
+user_controller = Blueprint("user_controller", __name__)
 
-keyword_controller = Blueprint("keyword_controller", __name__)
 
-
-@keyword_controller.route('/', methods=["GET"])
-def get_all_keywords():
+@user_controller.route('/', methods=['GET'])
+def get_all_users():
     try:
-        keywords = Keyword.query.all()
+        users = User.query.all()
         return APIResponseBuilder.success({
-            "keywords": keywords
+            'users': users
         })
     except SQLAlchemyError as e:
         return APIResponseBuilder.error(f"Issue running query: {e}")
@@ -21,16 +20,22 @@ def get_all_keywords():
         return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
-@keyword_controller.route('/<keyword_id>', methods=["GET"])
-def get_keyword_by_id(keyword_id):
+@user_controller.route('/<user_id>', methods=['GET'])
+def get_user_by_id(user_id):
+    """
+    Returns information for a single user by ID
+
+    :param user_id: UUID from firebase
+    :return: JSON response representing the user
+    """
     try:
-        keyword = Keyword.query.get(keyword_id)
-        if keyword:
+        user = User.query.filter_by(uuid=user_id).first()
+        if user:
             return APIResponseBuilder.success({
-                "keyword": keyword
+                "user": user
             })
         return APIResponseBuilder.failure({
-            "invalid_id": f"No keyword with id {keyword_id} found"
+            "invalid_id": f"Unable to find user with uuid {user_id}"
         })
     except SQLAlchemyError as e:
         return APIResponseBuilder.error(f"Issue running query: {e}")
@@ -38,20 +43,18 @@ def get_keyword_by_id(keyword_id):
         return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
-@keyword_controller.route('/', methods=["POST"])
-def create_keyword():
+@user_controller.route('/', methods=['POST'])
+def create_new_user():
     try:
-        # TODO: verify category belongs to passed user ID
         data = request.form.to_dict()
-        keyword = Keyword(
-            keyword=data['keyword'],
-            is_excluded=False,
-            category_id=data['category_id']
+        user = User(
+            email=data['email'],
+            uuid=data['uuid']
         )
-        db.session.add(keyword)
+        db.session.add(user)
         db.session.commit()
         return APIResponseBuilder.success({
-            "keyword": keyword
+            "user": user
         })
     except SQLAlchemyError as e:
         return APIResponseBuilder.error(f"Issue running query: {e}")
@@ -59,25 +62,23 @@ def create_keyword():
         return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
-@keyword_controller.route('/<keyword_id>', methods=["PATCH"])
-def update_keyword_by_id(keyword_id):
-    pass
-
-
-@keyword_controller.route("/<keyword_id>", methods=["DELETE"])
-def delete_keyword_by_id(keyword_id):
+@user_controller.route('/<user_id>', methods=['DELETE'])
+def delete_user_by_id(user_id):
+    """
+    Delete a user with firebase id user_id
+    :param user_id:
+    :return:
+    """
     try:
-        keyword = Keyword.query.filter_by(id=keyword_id).delete()
-        db.session.commit()
-        if keyword:
+        user = User.query.filter_by(uuid=user_id).delete()
+        if user:
             return APIResponseBuilder.success({
                 "deleted": True
             })
         return APIResponseBuilder.failure({
-            "invalid_id": f"Unable to delete keyword with ID {keyword_id}"
+            "invalid_id": f"Cannot find user with id {user_id}"
         })
     except SQLAlchemyError as e:
         return APIResponseBuilder.error(f"Issue running query: {e}")
     except Exception as e:
         return APIResponseBuilder.error(f"Error encountered: {e}")
-
