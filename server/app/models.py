@@ -51,7 +51,8 @@ class Category(Base):
         return {
             'id': self.id,
             'category_name': self.category_name,
-            'is_archived': self.is_archived
+            'is_archived': self.is_archived,
+            'link_count': len(self.links)
         }
 
     @property
