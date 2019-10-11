@@ -9,6 +9,9 @@ user_controller = Blueprint("user_controller", __name__)
 
 @user_controller.route('/', methods=['GET'])
 def get_all_users():
+    """
+    Gets list of all users - probably not useful
+    """
     try:
         users = User.query.all()
         return APIResponseBuilder.success({
@@ -45,6 +48,11 @@ def get_user_by_id(user_id):
 
 @user_controller.route('/', methods=['POST'])
 def create_new_user():
+    """
+    Creates a new user
+
+    :return: JSON representing the new User entity
+    """
     try:
         data = request.form.to_dict()
         user = User(
@@ -67,7 +75,7 @@ def delete_user_by_id(user_id):
     """
     Delete a user with firebase id user_id
     :param user_id:
-    :return:
+    :return: JSON boolean representing whether the user was successfully create
     """
     try:
         user = User.query.filter_by(uuid=user_id).delete()

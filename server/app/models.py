@@ -47,6 +47,14 @@ class Category(Base):
                             )
 
     @property
+    def user_serialized(self):
+        return {
+            'id': self.id,
+            'category_name': self.category_name,
+            'is_archived': self.is_archived
+        }
+
+    @property
     def serialized(self):
         keywords_list = []
         for row in self.keywords:
@@ -98,13 +106,15 @@ class User(Base):
     uuid = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False)
     links = db.relationship('Link', backref='user', lazy='dynamic')
+    categories = db.relationship('Category', backref='user', lazy='dynamic')
 
     @property
     def serialized(self):
         return {
             'id': self.id,
             'uuid': self.uuid,
-            'email': self.email
+            'email': self.email,
+            'categories': [category.user_serialized for category in self.categories]
         }
 
 
