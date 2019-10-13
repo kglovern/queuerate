@@ -15,3 +15,9 @@
 5) run "flask db upgrade" to apply those migrations to the database
 
 Most migration problems can be solved by removing the *.db and migrations folder and regenerating them
+
+# To start celery worker
+1) from the server directory, run:
+"celery -A app.tasks.tasks worker"
+
+This will be run as a daemon for production but doing it this way lets us see the debug printouts for development

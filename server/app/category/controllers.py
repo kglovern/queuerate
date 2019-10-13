@@ -1,11 +1,22 @@
 from flask import Blueprint, request
-from app.models import Category
+from app.models import Category, Link
 from app.services.APIResponseBuilder import APIResponseBuilder
 from sqlalchemy.exc import SQLAlchemyError
 from app import db
-
+from app.tasks import tasks
 
 category_controller = Blueprint("category_controller", __name__)
+
+
+@category_controller.route('/demo')
+def demo():
+    link = Link(url='https://www.tampabay.com/news/military/2019/10/12/he-befriended-the-ashes-of-a-vietnam-veteran-now-he-has-to-let-him-go/', user_id="aaabbbcccddd", link_title="test", link_description="test desc")
+    db.session.add(link)
+    db.session.commit()
+    print("Starting process")
+    tasks.process_link(link)
+    print("Ending process")
+    return "Initialized"
 
 
 @category_controller.route('/', methods=['GET'])
