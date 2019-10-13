@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
-import login from './login'
 import category from './category'
 import user from './user'
+import login from './auth'
 
 export default combineReducers({
     login,
