@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from app.models import User
+from app.models import User, Link, Category
 from app.services.APIResponseBuilder import APIResponseBuilder
 from sqlalchemy.exc import SQLAlchemyError
 from app import db
@@ -85,6 +85,43 @@ def delete_user_by_id(user_id):
             })
         return APIResponseBuilder.failure({
             "invalid_id": f"Cannot find user with id {user_id}"
+        })
+    except SQLAlchemyError as e:
+        return APIResponseBuilder.error(f"Issue running query: {e}")
+    except Exception as e:
+        return APIResponseBuilder.error(f"Error encountered: {e}")
+
+
+@link_controller.route('/<user_id>/links', methods=["GET"])
+def get_all_links_by_user():
+    """
+    Returns a JSON response of all links by user
+    Does not include associated categories
+
+    :param :user_id
+    """
+    # TODO: validate user ID
+    try:
+        links = Link.query.filter_by(user_id=user_id)
+        return APIResponseBuilder.success({
+            "links": links
+        })
+    except SQLAlchemyError as e:
+        return APIResponseBuilder.error(f"Issue running query: {e}")
+    except Exception as e:
+        return APIResponseBuilder.error(f"Error encountered: {e}")
+
+
+@category_controller.route('/<user_id>/categories', methods=['GET'])
+def get_all_categories_by_user():
+    """
+    Returns a JSON response of all categories by user
+    Does not include associated keywords
+    """
+    try:
+        categories = Category.query.filter_by(user_id=user_id)
+        return APIResponseBuilder.success({
+         "categories": categories
         })
     except SQLAlchemyError as e:
         return APIResponseBuilder.error(f"Issue running query: {e}")
