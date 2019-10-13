@@ -61,7 +61,24 @@ def create_keyword():
 
 @keyword_controller.route('/<keyword_id>', methods=["PATCH"])
 def update_keyword_by_id(keyword_id):
-    pass
+    try:
+        data_dict = request.form.to_dict()
+        keyword = Keyword.query.get(keyword_id)
+        if keyword:
+            keyword.keyword = data_dict['keyword']
+            keyword.is_excluded = data_dict['is_excluded']
+            db.session.commit()
+            return APIResponseBuilder.success({
+                "keyword": keyword
+            })
+        return APIResponseBuilder.failure({
+            "invalid_id": f"Unable to find keyword with id {keyword_id}"
+        })
+    except SQLAlchemyError as e:
+        return APIResponseBuilder.error(f"Issue running query: {e}")
+    except Exception as e:
+        return APIResponseBuilder.error(f"Error encountered: {e}")
+
 
 
 @keyword_controller.route("/<keyword_id>", methods=["DELETE"])

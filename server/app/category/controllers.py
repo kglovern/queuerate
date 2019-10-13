@@ -77,7 +77,33 @@ def create_new_category():
 
 @category_controller.route('/<category_id>', methods=['PATCH'])
 def update_category_by_id(category_id):
-    pass
+    """
+    Update a category represented by category_id.
+    Attributes that can change:
+    is_archived: Archive status
+    category_name: category can be renamed
+
+    :param category_id: ID of the category to be updated
+    :return: JSON response with the updated category entity
+    """
+    try:
+        data = request.form.to_dict()
+        category = Category.query.get(category_id)
+        if category:
+            category.category_name = data['category_name']
+            # category.is_archived = data['is_archived'] or False TODO: find way to convert JSON true -> python Bool
+            db.session.commit()
+            return APIResponseBuilder.success({
+                "category": category
+            })
+        else:
+            return APIResponseBuilder.failure({
+                "invalid_id": f"Unable to find category with ID of {category_id}"
+            })
+    except SQLAlchemyError as e:
+        return APIResponseBuilder.error(f"Issue running query: {e}")
+    except Exception as e:
+        return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
 @category_controller.route('/<category_id>/archive', methods=['POST'])
