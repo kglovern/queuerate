@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { login, logout } from '../store/actions'
 import { connect } from 'react-redux'
+import NavBar from './Navbar'
 
 class Home extends React.Component {
 	constructor(props) {
@@ -24,6 +25,7 @@ class Home extends React.Component {
 		const loginStatus = this.props.loginStatus == null ? false : this.props.loginStatus
 		return (
 			<div>
+				<NavBar />
 				<h2>Home screen</h2>
 				{/* <Link to="login">To login</Link> */}
 				Login Status: {loginStatus ? "Logged in" : "logged out"}
