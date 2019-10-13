@@ -1,4 +1,5 @@
 from app import db
+import enum
 
 
 class Base(db.Model):
@@ -118,6 +119,13 @@ class User(Base):
         }
 
 
+class ProcessingState(enum.Enum):
+    """ An enum to represent the state of processing for a link """
+    unprocessed = 0
+    processed = 1
+    error = 2
+
+
 class Link(Base):
     """
     Entity representing a link
@@ -131,6 +139,7 @@ class Link(Base):
     link_title = db.Column(db.String(128), nullable=False)
     link_description = db.Column(db.String(1024), nullable=False)
     is_marked_as_read = db.Column(db.Boolean, default=False)
+    processing_state = db.Column(db.Enum(ProcessingState))
 
     @property
     def serialized(self):
