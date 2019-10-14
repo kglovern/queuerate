@@ -1,4 +1,5 @@
 from app import db
+import enum
 
 
 class Base(db.Model):
@@ -70,7 +71,8 @@ class Category(Base):
             'is_archived': self.is_archived,
             'created_at': self.created_at,
             'updated_at': self.updated_at,
-            'keywords': keywords_list
+            'keywords': keywords_list,
+            'links': [link.serialized for link in self.links]
         }
 
 
@@ -118,6 +120,13 @@ class User(Base):
         }
 
 
+class ProcessingState(enum.IntEnum):
+    """ An enum to represent the state of processing for a link """
+    UNPROCESSED = 0
+    PROCESSED = 1
+    ERROR = 2
+
+
 class Link(Base):
     """
     Entity representing a link
@@ -128,9 +137,10 @@ class Link(Base):
 
     user_id = db.Column(db.String, db.ForeignKey('user.uuid'), nullable=False)
     url = db.Column(db.String(1024), nullable=False)
-    link_title = db.Column(db.String(128), nullable=False)
-    link_description = db.Column(db.String(1024), nullable=False)
+    link_title = db.Column(db.String(128))
+    link_description = db.Column(db.String(1024))
     is_marked_as_read = db.Column(db.Boolean, default=False)
+    processing_state = db.Column(db.Enum(ProcessingState), default=ProcessingState.UNPROCESSED)
 
     @property
     def serialized(self):
@@ -147,6 +157,7 @@ class Link(Base):
             'link_title': self.link_title,
             'link_description': self.link_description,
             'is_marked_as_read': self.is_marked_as_read,
+            'processing_state': self.processing_state,
             'created_at': self.created_at,
             'updated_at': self.updated_at,
             'categories': categories_list
