@@ -119,7 +119,7 @@ class User(Base):
         }
 
 
-class ProcessingState(enum.Enum):
+class ProcessingState(enum.IntEnum):
     """ An enum to represent the state of processing for a link """
     UNPROCESSED = 0
     PROCESSED = 1
@@ -136,8 +136,8 @@ class Link(Base):
 
     user_id = db.Column(db.String, db.ForeignKey('user.uuid'), nullable=False)
     url = db.Column(db.String(1024), nullable=False)
-    link_title = db.Column(db.String(128), nullable=False)
-    link_description = db.Column(db.String(1024), nullable=False)
+    link_title = db.Column(db.String(128))
+    link_description = db.Column(db.String(1024))
     is_marked_as_read = db.Column(db.Boolean, default=False)
     processing_state = db.Column(db.Enum(ProcessingState), default=ProcessingState.UNPROCESSED)
 

@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, request
 from app.models import Link, ProcessingState
 from app.services.APIResponseBuilder import APIResponseBuilder
 from sqlalchemy.exc import SQLAlchemyError
@@ -74,9 +74,9 @@ def create_link():
 
 
 @link_controller.route('/<link_id>', methods=["PATCH"])
-def update_link_by_id(link_id):
+def update_link_info_by_id(link_id):
     """
-    Update a link represented by link_id.
+    Update the info of a link represented by link_id.
     Attributes that can change:
     link_title: the title of the article
     link_description: a description of the link
@@ -104,8 +104,37 @@ def update_link_by_id(link_id):
         return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
-@link_controller.route('/<link_id>', methods=["PATCH"])
-def update_link_processing_state(link_id):
+@link_controller.route('/<link_id>/categories', methods=["PATCH"])
+def update_link_categories_by_id(link_id):
+    """
+    Update the categories of a link represented by link_id.
+    Attributes that can change:
+    categories: The new list of categories that the link belongs to
+
+    :param link_id: ID of the link to be updated
+    :return: JSON response with the updated link entity
+    """
+    try:
+        data = request.form.to_dict()
+        link = Link.query.get(link_id)
+        if link:
+            link.categories = data['categories']
+            db.session.commit()
+            return APIResponseBuilder.success({
+                "link": link
+            })
+        else:
+            return APIResponseBuilder.failure({
+                "invalid_id": f"Unable to find link with ID of {link_id}"
+            })
+    except SQLAlchemyError as e:
+        return APIResponseBuilder.error(f"Issue running query: {e}")
+    except Exception as e:
+        return APIResponseBuilder.error(f"Error encountered: {e}")
+
+
+@link_controller.route('/<link_id>/processing_state/<processing_state>', methods=["PATCH"])
+def update_link_processing_state(link_id, processing_state):
     """
     Update a links processing state.
     Attributes: processing_state: the updated processing state for the link
@@ -117,7 +146,7 @@ def update_link_processing_state(link_id):
         data = request.form.to_dict()
         link = Link.query.get(link_id)
         if link:
-            link.processing_state = data['processing_state']
+            link.processing_state = processing_state
             db.session.commit()
             return APIResponseBuilder.success({
                 "link": link
@@ -207,3 +236,14 @@ def mark_link_as_unread(link_id):
         return APIResponseBuilder.error(f"Issue running query: {e}")
     except Exception as e:
         return APIResponseBuilder.error(f"Error encountered: {e}")
+
+
+@link_controller.route('/<link_id>/categorize', methods=['GET'])
+def categorize_link(link_id):
+    """
+    Categorizes a link by link_id
+
+    :param link_id: ID of the link to be marked as unread
+    """
+    raise NotImplementedError("Replay not yet implemented.")
+

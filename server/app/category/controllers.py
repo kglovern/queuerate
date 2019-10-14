@@ -106,7 +106,7 @@ def update_category_by_id(category_id):
         return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
-@category_controller.route('/<category_id>/archive', methods=['POST'])
+@category_controller.route('/<category_id>/archive', methods=['PATCH'])
 def archive_category_by_id(category_id):
     """
     Archives a specific category identified by category_id
@@ -133,7 +133,7 @@ def archive_category_by_id(category_id):
         return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
-@category_controller.route('/<category_id>/unarchive', methods=['POST'])
+@category_controller.route('/<category_id>/unarchive', methods=['PATCH'])
 def unarchive_category_by_id(category_id):
     """
     Unarchives a specific category identified by category_id

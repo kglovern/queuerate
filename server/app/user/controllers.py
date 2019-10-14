@@ -92,8 +92,8 @@ def delete_user_by_id(user_id):
         return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
-@link_controller.route('/<user_id>/links', methods=["GET"])
-def get_all_links_by_user():
+@user_controller.route('/<user_id>/links', methods=["GET"])
+def get_all_links_by_user(user_id):
     """
     Returns a JSON response of all links by user
     Does not include associated categories
@@ -102,7 +102,7 @@ def get_all_links_by_user():
     """
     # TODO: validate user ID
     try:
-        links = Link.query.filter_by(user_id=user_id)
+        links = Link.query.filter_by(user_id=user_id).all()
         return APIResponseBuilder.success({
             "links": links
         })
@@ -112,14 +112,14 @@ def get_all_links_by_user():
         return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
-@category_controller.route('/<user_id>/categories', methods=['GET'])
-def get_all_categories_by_user():
+@user_controller.route('/<user_id>/categories', methods=['GET'])
+def get_all_categories_by_user(user_id):
     """
     Returns a JSON response of all categories by user
     Does not include associated keywords
     """
     try:
-        categories = Category.query.filter_by(user_id=user_id)
+        categories = Category.query.filter_by(user_id=user_id).all()
         return APIResponseBuilder.success({
          "categories": categories
         })
