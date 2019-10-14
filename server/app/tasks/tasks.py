@@ -3,6 +3,8 @@ from celery.utils.log import get_task_logger
 from celery.exceptions import CeleryError
 from bs4 import BeautifulSoup
 import requests
+import pke
+
 logger = get_task_logger(__name__)
 
 
@@ -27,7 +29,7 @@ def process_link(link):
         categorize_entity.s(),
     )
     print("Kicking off ")
-    result = pipeline.delay(message)
+    pipeline.delay(message)
 
 
 @celery.task
@@ -59,10 +61,21 @@ def get_content_from_html(message):
 @celery.task
 def get_keywords_from_content(message):
     print("Step 3")
+    pos = {'NOUN', 'PROPN', 'ADJ', 'VERB'}
+
+    extractor = pke.unsupervised.TopicRank()
+    extractor.load_document(input=message["text"], language='en')
+
+    #extractor.candidate_selection()
+
+    extractor.candidate_weighting(window=3, pos=pos)
+    keywords = extractor.get_n_best(n=10)
+    message["keywords"] = keywords
     return message
 
 
 @celery.task
 def categorize_entity(message):
     print("Step 4")
+    print(message["keywords"])
     return message
