@@ -71,7 +71,8 @@ class Category(Base):
             'is_archived': self.is_archived,
             'created_at': self.created_at,
             'updated_at': self.updated_at,
-            'keywords': keywords_list
+            'keywords': keywords_list,
+            'links': [link.serialized for link in self.links]
         }
 
 

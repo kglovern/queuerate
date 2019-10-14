@@ -1,8 +1,9 @@
 from flask import Blueprint, request
-from app.models import Link, ProcessingState
+from app.models import Link, Category, ProcessingState
 from app.services.APIResponseBuilder import APIResponseBuilder
 from sqlalchemy.exc import SQLAlchemyError
 from app import db
+import json
 
 
 link_controller = Blueprint("link_controller", __name__)
@@ -109,7 +110,7 @@ def update_link_categories_by_id(link_id):
     """
     Update the categories of a link represented by link_id.
     Attributes that can change:
-    categories: The new list of categories that the link belongs to
+    categories: The new list of category ids that the link belongs to
 
     :param link_id: ID of the link to be updated
     :return: JSON response with the updated link entity
@@ -118,7 +119,14 @@ def update_link_categories_by_id(link_id):
         data = request.form.to_dict()
         link = Link.query.get(link_id)
         if link:
-            link.categories = data['categories']
+            for category_id in json.loads(data['categories']):
+                category = Category.query.filter_by(id=category_id).first()
+                if category:
+                    link.categories.append(category)
+                else:
+                    return APIResponseBuilder.failure({
+                        "invalid_id": f"Unable to find category with ID of {category_id}"
+                    })
             db.session.commit()
             return APIResponseBuilder.success({
                 "link": link

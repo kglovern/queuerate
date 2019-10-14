@@ -1,9 +1,9 @@
 from flask import Blueprint, request
-from app.models import Category
+from app.models import Category, Link
 from app.services.APIResponseBuilder import APIResponseBuilder
 from sqlalchemy.exc import SQLAlchemyError
 from app import db
-
+import json
 
 category_controller = Blueprint("category_controller", __name__)
 

@@ -96,7 +96,6 @@ def delete_user_by_id(user_id):
 def get_all_links_by_user(user_id):
     """
     Returns a JSON response of all links by user
-    Does not include associated categories
 
     :param :user_id
     """
@@ -116,7 +115,8 @@ def get_all_links_by_user(user_id):
 def get_all_categories_by_user(user_id):
     """
     Returns a JSON response of all categories by user
-    Does not include associated keywords
+    
+    :param :user_id
     """
     try:
         categories = Category.query.filter_by(user_id=user_id).all()
