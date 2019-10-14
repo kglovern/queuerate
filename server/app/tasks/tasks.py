@@ -2,6 +2,8 @@ from celery import Celery, chain
 from celery.utils.log import get_task_logger
 from celery.exceptions import CeleryError
 from bs4 import BeautifulSoup
+from app.models import Category, Link
+from app import db
 import requests
 import pke
 
@@ -66,10 +68,11 @@ def get_keywords_from_content(message):
     extractor = pke.unsupervised.TopicRank()
     extractor.load_document(input=message["text"], language='en')
 
-    #extractor.candidate_selection()
+    # TODO: Is this a necessary step?
+    extractor.candidate_selection()
 
-    extractor.candidate_weighting(window=3, pos=pos)
-    keywords = extractor.get_n_best(n=10)
+    extractor.candidate_weighting()
+    keywords = extractor.get_n_best(n=15) # wide net cast
     message["keywords"] = keywords
     return message
 
@@ -77,5 +80,30 @@ def get_keywords_from_content(message):
 @celery.task
 def categorize_entity(message):
     print("Step 4")
-    print(message["keywords"])
+    key_dict = map_keywords_to_dict(message["keywords"])
+    user_categories = Category.query.filter_by(user_id=message["uuid"]).all()
+
+    link = Link.query.get(message["link_id"])
+
+    for category in user_categories:
+        for cat_keyword in category.keywords:
+            if cat_keyword.keyword in key_dict.keys():
+                print("Found a match")
+                category.links.append(link) # should set up relationship correctly
+
+    db.session.commit()
     return message
+
+
+def map_keywords_to_dict(keywords):
+    """
+    Exactly what's on the box - given the array of arrays from PKE, return a dict where the keyword
+    is the key and the value is the relevance
+
+    :param keywords: array of keyword/relevancy arrays
+    :return: dict
+    """
+    key_dict = {}
+    for keyword in keywords:
+        key_dict[keyword[0]] = keyword[1]
+    return key_dict

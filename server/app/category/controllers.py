@@ -10,7 +10,7 @@ category_controller = Blueprint("category_controller", __name__)
 
 @category_controller.route('/demo')
 def demo():
-    link = Link(url='https://aster.cloud/2019/10/12/10-pitfalls-to-avoid-when-implementing-devops/', user_id="aaabbbcccddd", link_title="test", link_description="test desc")
+    link = Link(url='https://www.w3schools.com/js/js_json_intro.asp', user_id="aaabbbcccddd", link_title="test", link_description="test desc")
     db.session.add(link)
     db.session.commit()
     print("Starting process")
