@@ -1,5 +1,3 @@
-import axios from 'axios';
+import { post }  from '../Utility/axios';
 
-export const createUser = user => {
-    return axios.post('http://localhost:8080/users/', user);
-}
+export const createUser = user => post('/users/', user)

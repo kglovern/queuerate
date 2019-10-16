@@ -30,7 +30,7 @@ export const signup = user => (dispatch, getState) => {
 
       createUser(user).then(() => {
         dispatch(store_user(user));
-      });
+        })
       
     })
     .catch(error => {

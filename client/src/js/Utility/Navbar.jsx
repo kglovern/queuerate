@@ -1,5 +1,4 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { Component } from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -9,74 +8,93 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Route, Switch, Link } from "react-router-dom";
 import { withRouter } from 'react-router-dom'
+import AddIcon from '@material-ui/icons/Add';
+import Fab from '@material-ui/core/Fab';
+import { connect }from 'react-redux'
+import fetchCategories from '../APIs/Category'
+import AddCategory from '../Components/AddCategory'
 
-const drawerWidth = 240;
+class Navbar extends Component {
+  constructor(props) {
+    super(props);
+  }
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-  },
-  toolbar: theme.mixins.toolbar,
-}));
+  componentDidMount() { 
+    const { fetchCategories } = this.props
+    fetchCategories()
+  }
 
-function Navbar({history}) {
-  const classes = useStyles();
+  render() {
+    const { history, classes, categories } = this.props
 
-  return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar>
-          {/* <Typography variant="h6" noWrap>
+    return (
+      <div className={classes.root}>
+        <CssBaseline />
+        <AppBar position="fixed" className={classes.appBar}>
+          <Toolbar>
+            {/* <Typography variant="h6" noWrap>
             Clipped drawer
           </Typography> */}
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        className={classes.drawer}
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <div className={classes.toolbar} />
-        <List>
-          {['All', 'Music', 'Sports', 'Technologies'].map((text, index) => (
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          className={classes.drawer}
+          variant="permanent"
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+        >
+          <div className={classes.toolbar} />
+          <List>
             <ListItem button
-              key={text}
-              onClick={() => history.push('/' + text)}>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        <Switch>
-          <Route
-            path="/music"
-            children={({ match }) => (
-              <h2>music</h2>
-            )}
-          />
-        </Switch>
-      </main>
-    </div>
-  );
+                // key={index}
+                onClick={() => history.push('/')}>
+                <ListItemText primary={'All'} />
+              </ListItem>
+            {categories.map((obj, index) => (
+              <ListItem button
+                key={index}
+                onClick={() => history.push('/category/' + obj.category_name)}>
+                <ListItemText primary={obj.category_name} />
+              </ListItem>
+            ))}
+          </List>
+          <ListItem>
+            <Fab
+              size="small"
+              color="secondary"
+              aria-label="add"
+              className={classes.margin}
+              onClick={() => history.push('/addCategory')}
+            >
+              <AddIcon />
+            </Fab>
+          </ListItem>
+        </Drawer>
+        <main className={classes.content}>
+          <div className={classes.toolbar} />
+          <Switch>
+            <Route
+              path="/category/music"
+              children={({ match }) => (
+                <h2>music</h2>
+              )}
+            />
+            <Route path="/addCategory" component={AddCategory}/>
+          </Switch>
+        </main>
+      </div>
+    );
+  }
 }
 
-export default withRouter(Navbar);
+const mapStateToProps = (state, ownProps) => ({
+  categories: state.category ? state.category.categories : []
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  fetchCategories: () => dispatch(fetchCategories())
+})
+
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Navbar));
