@@ -24,7 +24,7 @@ export const signup = user => (dispatch, getState) => {
     .createUserWithEmailAndPassword(email, password)
     .then(result => {
       const user = {
-        id: result.user.uid,
+        uuid: result.user.uid,
         email: result.user.email
       };
 
