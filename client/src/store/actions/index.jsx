@@ -1,7 +1,8 @@
-export function login() {
-    return { type: 'LOGIN' }
+import { login, signup, logout  } from './user';
+
+export default {
+    login,
+    signup,
+    logout
 }
 
-export function logout() {
-    return { type: 'LOGOUT' }
-}
