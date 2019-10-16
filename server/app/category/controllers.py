@@ -1,9 +1,9 @@
 from flask import Blueprint, request
-from app.models import Category
+from app.models import Category, Link
 from app.services.APIResponseBuilder import APIResponseBuilder
 from sqlalchemy.exc import SQLAlchemyError
 from app import db
-
+import json
 
 category_controller = Blueprint("category_controller", __name__)
 
@@ -106,7 +106,7 @@ def update_category_by_id(category_id):
         return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
-@category_controller.route('/<category_id>/archive', methods=['POST'])
+@category_controller.route('/<category_id>/archive', methods=['PATCH'])
 def archive_category_by_id(category_id):
     """
     Archives a specific category identified by category_id
@@ -133,7 +133,7 @@ def archive_category_by_id(category_id):
         return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
-@category_controller.route('/<category_id>/unarchive', methods=['POST'])
+@category_controller.route('/<category_id>/unarchive', methods=['PATCH'])
 def unarchive_category_by_id(category_id):
     """
     Unarchives a specific category identified by category_id
