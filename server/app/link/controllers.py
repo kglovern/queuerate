@@ -2,6 +2,7 @@ from flask import Blueprint, request
 from app.models import Link, Category, ProcessingState
 from app.services.APIResponseBuilder import APIResponseBuilder
 from sqlalchemy.exc import SQLAlchemyError
+from app.tasks.tasks import process_link
 from app import db
 import json
 
@@ -48,6 +49,7 @@ def create_link():
         )
         db.session.add(link)
         db.session.commit()
+        process_link(link)
         return APIResponseBuilder.success({
             "link": link
         })
