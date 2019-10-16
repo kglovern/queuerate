@@ -2,7 +2,7 @@ from celery import Celery, chain
 from celery.utils.log import get_task_logger
 from celery.exceptions import CeleryError
 from bs4 import BeautifulSoup
-from app.models import Category, Link
+from app.models import Category, Link, ProcessingState
 from app import db
 import requests
 import pke
@@ -37,15 +37,22 @@ def process_link(link):
 @celery.task
 def request_html(message):
     print(f"Step 1: processing {message['url']}")
-    r = requests.get(message["url"])
-    if r.status_code == 200:
-        print("Retrieved HTML successfully")
-        message["html_content"] = r.text
-        return message
-    else:
-        # TODO make this a custom handled error so we can set error state on link
-        print("FAILED to retrieve HTML")
-        raise CeleryError('Error fetching html')
+    try:
+        r = requests.get(message["url"])
+        if r.status_code == 200:
+            print("Retrieved HTML successfully")
+            message["html_content"] = r.text
+            return message
+        else:
+            link = Link.query.get(message["link_id"])
+            link.processing_state = ProcessingState.ERROR
+            db.session.commit()
+            print("FAILED to retrieve HTML")
+            raise CeleryError('Error fetching html')
+    except Exception as e:
+        link = Link.query.get(message["link_id"])
+        link.processing_state = ProcessingState.ERROR
+        db.session.commit()
 
 
 @celery.task
@@ -57,6 +64,7 @@ def get_content_from_html(message):
     for element in body_content(["script", "style", "pre", "header", "footer", "nav"]):
         element.extract()  # rip it out
     message["text"] = body_content.get_text()
+    print(message["text"])
     return message
 
 
@@ -68,11 +76,10 @@ def get_keywords_from_content(message):
     extractor = pke.unsupervised.TopicRank()
     extractor.load_document(input=message["text"], language='en')
 
-    # TODO: Is this a necessary step?
     extractor.candidate_selection()
 
     extractor.candidate_weighting()
-    keywords = extractor.get_n_best(n=15) # wide net cast
+    keywords = extractor.get_n_best(n=15)  # wide net cast
     message["keywords"] = keywords
     return message
 
@@ -85,6 +92,7 @@ def categorize_entity(message):
     user_categories = Category.query.filter_by(user_id=message["uuid"]).all()
 
     link = Link.query.get(message["link_id"])
+    # TODO: Validate we received a link
 
     for category in user_categories:
         for cat_keyword in category.keywords:
@@ -92,8 +100,8 @@ def categorize_entity(message):
                 print(f"Found matching keyword - {cat_keyword.keyword}")
                 category.links.append(link)  # should set up relationship correctly
                 break  # To outer loop
-    # change state flag to processed
-
+    # Update status to processed
+    link.processing_state = ProcessingState.PROCESSED
     db.session.commit()
     return message
 

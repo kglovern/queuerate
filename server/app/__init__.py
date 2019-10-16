@@ -16,6 +16,8 @@ from app import models
 from app.category.controllers import category_controller as category_module
 from app.keyword.controllers import keyword_controller as keyword_module
 from app.user.controllers import user_controller as user_module
+from app.link.controllers import link_controller as link_module
+
 
 main = Blueprint("main", __name__)
 
@@ -33,3 +35,4 @@ app.register_blueprint(main, url_prefix='/')
 app.register_blueprint(category_module, url_prefix='/categories')
 app.register_blueprint(keyword_module, url_prefix='/keywords')
 app.register_blueprint(user_module, url_prefix='/users')
+app.register_blueprint(link_module, url_prefix='/links')

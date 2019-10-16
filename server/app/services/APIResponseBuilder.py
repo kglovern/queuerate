@@ -1,5 +1,6 @@
 from app import db
 from flask import jsonify, make_response
+import builtins
 
 
 class APIResponseBuilder:
@@ -59,7 +60,7 @@ class APIResponseBuilder:
         data_dict = {}
         if type(data) == dict:
             for k, v in data.items():
-                if type(v) == list and len(v) > 0 and issubclass(type(v[0]), db.Model):
+                if isinstance(v, builtins.list) and len(v) > 0 and issubclass(type(v[0]), db.Model):
                     data_dict[k] = [row.serialized for row in v]
                 elif isinstance(v, db.Model):
                     data_dict[k] = v.serialized

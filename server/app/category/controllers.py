@@ -4,13 +4,14 @@ from app.services.APIResponseBuilder import APIResponseBuilder
 from sqlalchemy.exc import SQLAlchemyError
 from app import db
 from app.tasks import tasks
+import json
 
 category_controller = Blueprint("category_controller", __name__)
 
 
 @category_controller.route('/demo')
 def demo():
-    link = Link(url='https://www.w3schools.com/js/js_json_intro.asp', user_id="aaabbbcccddd", link_title="test", link_description="test desc")
+    link = Link(url='localhost', user_id="aaabbbcccddd", link_title="test", link_description="test desc")
     db.session.add(link)
     db.session.commit()
     print("Starting process")
@@ -117,55 +118,22 @@ def update_category_by_id(category_id):
         return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
-@category_controller.route('/<category_id>/archive', methods=['POST'])
-def archive_category_by_id(category_id):
+@category_controller.route('/<category_id>/links', methods=["GET"])
+def get_all_links_by_category(category_id):
     """
-    Archives a specific category identified by category_id
+    Returns a JSON response of all links by category
+    Does not include associated categories
 
-    :param category_id: ID of the Category object to be archived
-    :return: JSON response of the updated category
+    :param :category_id
     """
-    # TODO: validate user ID from post param - for now we'll assume it's the correct user
+    # TODO: validate category ID
     try:
         category = Category.query.get(category_id)
-        if category:
-            category.is_archived = True
-            db.session.commit()
-            return APIResponseBuilder.success({
-                "category": category,
-            })
-        else:
-            return APIResponseBuilder.failure({
-                "invalid_id": f"Unable to find category with ID of {category_id}"
-            })
+        return APIResponseBuilder.success({
+            "links": category.links
+        })
     except SQLAlchemyError as e:
         return APIResponseBuilder.error(f"Issue running query: {e}")
     except Exception as e:
         return APIResponseBuilder.error(f"Error encountered: {e}")
 
-
-@category_controller.route('/<category_id>/unarchive', methods=['POST'])
-def unarchive_category_by_id(category_id):
-    """
-    Unarchives a specific category identified by category_id
-
-    :param category_id: ID of the category to be unarchived
-    :return: JSON object of updated Category
-    """
-    # TODO: validate user ID from post param - for now we'll assume it's the correct user
-    try:
-        category = Category.query.get(category_id)
-        if category:
-            category.is_archived = False
-            db.session.commit()
-            return APIResponseBuilder.success({
-                "category": category,
-            })
-        else:
-            return APIResponseBuilder.failure({
-                "invalid_id": f"Unable to find category with ID of {category_id}"
-            })
-    except SQLAlchemyError as e:
-        return APIResponseBuilder.error(f"Issue running query: {e}")
-    except Exception as e:
-        return APIResponseBuilder.error(f"Error encountered: {e}")
