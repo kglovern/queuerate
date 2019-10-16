@@ -23,7 +23,19 @@ function LoginRoute({ component: Component, authed, ...rest }) {
     )
 }
 
+function SignUpRoute({ component: Component, authed, ...rest }) {
+    return (
+        <Route
+            {...rest}
+            render={(props) => authed === false
+                ? <Component {...props} />
+                : <Redirect to={{ pathname: '/', state: { from: props.location } }} />}
+        />
+    )
+}
+
 export {
     PrivateRoute,
-    LoginRoute
+    LoginRoute,
+    SignUpRoute
 }
