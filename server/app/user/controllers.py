@@ -38,7 +38,7 @@ def create_new_user():
     :return: JSON representing the new User entity
     """
     try:
-        data = request.form.to_dict()
+        data = request.json
         user = User(
             email=data['email'],
             uuid=data['uuid']
@@ -87,7 +87,7 @@ def get_all_links_by_user(user_id):
     try:
         links = Link.query.filter_by(user_id=user_id).all()
         return APIResponseBuilder.success({
-            "links": links
+            "links": links,
         })
     except SQLAlchemyError as e:
         return APIResponseBuilder.error(f"Issue running query: {e}")

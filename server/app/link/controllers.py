@@ -41,7 +41,7 @@ def create_link():
     """
     # TODO: validate user ID
     try:
-        data = request.to_dict()
+        data = request.json
         link = Link(
             user_id=data['user_id'],
             url=data['url'],
@@ -69,7 +69,7 @@ def update_link_info_by_id(link_id):
     :return: JSON response with the updated link entity
     """
     try:
-        data = request.form.to_dict()
+        data = request.json
         link = Link.query.get(link_id)
         if link:
             link.link_title = data['link_title']
@@ -99,7 +99,7 @@ def update_link_categories_by_id(link_id):
     :return: JSON response with the updated link entity
     """
     try:
-        data = request.form.to_dict()
+        data = request.json
         link = Link.query.get(link_id)
         if link:
             for category_id in json.loads(data['categories']):

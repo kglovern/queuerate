@@ -11,7 +11,7 @@ category_controller = Blueprint("category_controller", __name__)
 
 @category_controller.route('/demo')
 def demo():
-    link = Link(url='localhost', user_id="aaabbbcccddd", link_title="test", link_description="test desc")
+    link = Link(url='https://www.w3schools.com/js/js_json_intro.asp', user_id="aaabbbcccddd", link_title="test", link_description="test desc")
     db.session.add(link)
     db.session.commit()
     print("Starting process")
@@ -69,7 +69,7 @@ def create_new_category():
     :return: JSON of new category if successful, error response if not
     """
     try:
-        data = request.form.to_dict()
+        data = request.json
         # We'll never want a category to be archived by default so we can ignore the is_archived param
         # and just go with the default
         category = Category(
@@ -99,7 +99,7 @@ def update_category_by_id(category_id):
     :return: JSON response with the updated category entity
     """
     try:
-        data = request.form.to_dict()
+        data = request.json
         category = Category.query.get(category_id)
         if category:
             category.category_name = data['category_name']

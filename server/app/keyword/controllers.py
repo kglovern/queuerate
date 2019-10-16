@@ -12,7 +12,7 @@ keyword_controller = Blueprint("keyword_controller", __name__)
 def create_keyword():
     try:
         # TODO: verify category belongs to passed user ID
-        data = request.form.to_dict()
+        data = request.json
         keyword = Keyword(
             keyword=data['keyword'],
             is_excluded=False,
@@ -32,7 +32,7 @@ def create_keyword():
 @keyword_controller.route('/<keyword_id>', methods=["PATCH"])
 def update_keyword_by_id(keyword_id):
     try:
-        data_dict = request.form.to_dict()
+        data_dict = request.json
         keyword = Keyword.query.get(keyword_id)
         if keyword:
             keyword.keyword = data_dict['keyword']

@@ -59,12 +59,16 @@ def request_html(message):
 def get_content_from_html(message):
     print("Step 2 - parsing HTML")
     html_content = BeautifulSoup(message["html_content"], 'html.parser')
+    # Get title and description (eventually)
+    link_title = html_content.title.string
+    link = Link.query.get(message["link_id"])
+    link.link_title = link_title
+    db.session.commit()
     body_content = html_content.body
     # Remove JS, CSS, and code blocks. Also remove header, and nav since those likely won't be relevant
     for element in body_content(["script", "style", "pre", "header", "footer", "nav"]):
         element.extract()  # rip it out
     message["text"] = body_content.get_text()
-    print(message["text"])
     return message
 
 
