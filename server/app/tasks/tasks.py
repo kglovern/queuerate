@@ -99,11 +99,17 @@ def categorize_entity(message):
     # TODO: Validate we received a link
 
     for category in user_categories:
+        add_link_to_category = False
         for cat_keyword in category.keywords:
             if cat_keyword.keyword in key_dict.keys():
-                print(f"Found matching keyword - {cat_keyword.keyword}")
-                category.links.append(link)  # should set up relationship correctly
-                break  # To outer loop
+                if not cat_keyword.is_excluded:
+                    print(f"Found matching non-excluded keyword - {cat_keyword.keyword}")
+                    add_link_to_category = True
+                else:
+                    add_link_to_category = False
+                    break
+        if add_link_to_category:
+            category.links.append(link)  # should set up relationship correctly
     # Update status to processed
     link.processing_state = ProcessingState.PROCESSED
     db.session.commit()
