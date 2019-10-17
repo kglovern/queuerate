@@ -33,6 +33,7 @@ class APIResponseBuilder:
             'message': msg
         }), 500)
 
+
     @staticmethod
     def failure(data=None):
         """

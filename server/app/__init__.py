@@ -18,11 +18,13 @@ from app.keyword.controllers import keyword_controller as keyword_module
 from app.user.controllers import user_controller as user_module
 from app.link.controllers import link_controller as link_module
 
+
 @app.after_request 
 def after_request(response):
     header = response.headers
     header['Access-Control-Allow-Origin'] = '*'
     return response
+
     
 main = Blueprint("main", __name__)
 
