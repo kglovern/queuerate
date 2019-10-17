@@ -8,11 +8,14 @@
     "@material-ui/core": "^4.5.0",
     "@material-ui/icons": "^4.4.3",
     "axios": "^0.19.0",
+    "babel-loader": "^8.0.6",
     "css-loader": "^3.2.0",
     "file-loader": "^4.2.0",
     "firebase": "^7.1.0",
     "html-webpack-plugin": "^3.2.0",
+    "material-ui-chip-input": "^1.0.0",
     "react": "^16.10.2",
+    "react-dnd": "^9.4.0",
     "react-dom": "^16.10.2",
     "react-material-ui": "^0.0.1",
     "react-redux": "^7.1.1",
@@ -30,8 +33,7 @@
     "start-win": "node node_modules/webpack-dev-server/bin/webpack-dev-server --mode development",
     "start-prod": "webpack-dev-server --mode production",
     "build": "webpack --mode production",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test"
   },
   "eslintConfig": {
     "extends": "react-app"

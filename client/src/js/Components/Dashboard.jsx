@@ -1,26 +1,39 @@
 import React from 'react';
-import { connect } from 'react-redux'
+import { makeStyles } from '@material-ui/core/styles';
 import NavBar from '../Utility/Navbar'
 
-class DashBoard extends React.Component {
-	constructor(props) {
-		super(props)
-	}
+const drawerWidth = 240;
 
-	render() {
-		// console.log(this.props);
-		return (
-			<NavBar />
-		)
-	}
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: 'flex',
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+  },
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0,
+  },
+  drawerPaper: {
+    width: drawerWidth,
+  },
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+  },
+  toolbar: theme.mixins.toolbar,
+  fab: {
+	margin: theme.spacing(1),
+  },
+  extendedIcon: {
+    marginRight: theme.spacing(1),
+  }
+}));
+
+export default function DashBoard(){
+	const classes = useStyles();
+	return (
+		<NavBar classes={classes}/>
+	)
 }
-
-const mapStateToProps = (state,/* ownProps */) => {
-	return {
-		state: state
-	}
-}
-
-export default connect(
-	mapStateToProps
-)(DashBoard)
