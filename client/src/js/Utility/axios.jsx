@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 /* Default API */
-const axiosObj =  axios.create({
+export const axiosObj =  axios.create({
   baseURL: 'http://localhost:8080',
   headers: {
     'Authorization': 'token here'

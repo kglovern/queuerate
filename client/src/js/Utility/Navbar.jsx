@@ -13,13 +13,14 @@ import Fab from '@material-ui/core/Fab';
 import { connect }from 'react-redux'
 import fetchCategories from '../APIs/Category'
 import AddCategory from '../Components/AddCategory'
+import CategoryView from "../Components/CategoryView/CategoryView";
 
 class Navbar extends Component {
   constructor(props) {
     super(props);
   }
 
-  componentDidMount() { 
+  componentDidMount() {
     const { fetchCategories } = this.props
     fetchCategories()
   }
@@ -54,7 +55,7 @@ class Navbar extends Component {
             {categories.map((obj, index) => (
               <ListItem button
                 key={index}
-                onClick={() => history.push('/category/' + obj.category_name)}>
+                onClick={() => history.push('/category/' + obj.id)}>
                 <ListItemText primary={obj.category_name} />
               </ListItem>
             ))}
@@ -75,10 +76,9 @@ class Navbar extends Component {
           <div className={classes.toolbar} />
           <Switch>
             <Route
-              path="/category/music"
-              children={({ match }) => (
-                <h2>music</h2>
-              )}
+                exact
+                path="/category/:categoryID"
+                component={CategoryView}
             />
             <Route path="/addCategory" component={AddCategory}/>
           </Switch>
