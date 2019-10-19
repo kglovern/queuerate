@@ -12,6 +12,7 @@ __pycache__/
 .venv
 venv/
 ENV/
+*-env/
 
 # Installer logs
 pip-log.txt
@@ -60,3 +61,4 @@ node_modules
 
 # VSCode
 .vscode/
+*.code-workspace
