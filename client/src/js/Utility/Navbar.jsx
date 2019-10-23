@@ -14,6 +14,7 @@ import { connect }from 'react-redux'
 import fetchCategories from '../APIs/Category'
 import AddCategory from '../Components/AddCategory'
 import CategoryView from "../Components/CategoryView/CategoryView";
+import EditCategory from '../Components/EditCategory/EditCategory';
 
 class Navbar extends Component {
   constructor(props) {
@@ -79,6 +80,11 @@ class Navbar extends Component {
                 exact
                 path="/category/:categoryID"
                 component={CategoryView}
+            />
+            <Route
+                exact
+                path="/category/:categoryID/edit"
+                component={EditCategory}
             />
             <Route path="/addCategory" component={AddCategory}/>
           </Switch>

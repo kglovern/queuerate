@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import Checkbox from '@material-ui/core/Checkbox';
 import Star from '@material-ui/icons/Star';
 import StarBorder from '@material-ui/icons/StarBorder';
-import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import CategoryViewAPIService from "./CategoryViewAPIService";
 
 
