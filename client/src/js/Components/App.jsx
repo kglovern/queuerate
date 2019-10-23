@@ -13,15 +13,14 @@ import { PrivateRoute, LoginRoute, SignUpRoute } from '../Utility/Routes';
 class App extends React.Component {
 
   render() {
-
     const { isAuth } = this.props;
 
     return (
         <Router>
           <Switch>
-            <LoginRoute authed={true} path="/login" component={Login} />
-            <SignUpRoute authed={true} path="/signup" component={SignUp} />
-            <PrivateRoute authed={true} path='/' component={DashBoard} />
+            <LoginRoute authed={isAuth} path="/login" component={Login} />
+            <SignUpRoute authed={isAuth} path="/signup" component={SignUp} />
+            <PrivateRoute authed={isAuth} path='/' component={DashBoard} />
           </Switch>
         </Router>
     )

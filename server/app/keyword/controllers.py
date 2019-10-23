@@ -15,7 +15,7 @@ def create_keyword():
         data = request.json
         keyword = Keyword(
             keyword=data['keyword'],
-            is_excluded=False,
+            is_excluded=data["is_excluded"],
             category_id=data['category_id']
         )
         db.session.add(keyword)
