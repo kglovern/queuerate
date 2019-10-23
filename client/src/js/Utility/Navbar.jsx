@@ -11,7 +11,7 @@ import { withRouter } from 'react-router-dom'
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import { connect }from 'react-redux'
-import fetchCategories from '../APIs/Category'
+import { fetchCategories } from '../APIs/Category'
 import AddCategory from '../Components/AddCategory'
 import CategoryView from "../Components/CategoryView/CategoryView";
 
@@ -27,7 +27,6 @@ class Navbar extends Component {
 
   render() {
     const { history, classes, categories } = this.props
-
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -95,6 +94,5 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = (dispatch) => ({
   fetchCategories: () => dispatch(fetchCategories())
 })
-
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Navbar));
