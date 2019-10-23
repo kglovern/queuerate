@@ -1,0 +1,8 @@
+div.link-box{
+    display: 'inline-flex';
+}
+
+.link_input{
+    flex-grow: 1;
+    margin: 0px 100px 0px 0px;
+}

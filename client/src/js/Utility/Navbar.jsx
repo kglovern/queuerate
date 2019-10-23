@@ -10,10 +10,11 @@ import { Route, Switch, Link } from "react-router-dom";
 import { withRouter } from 'react-router-dom'
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
-import { connect }from 'react-redux'
-import { fetchCategories } from '../APIs/Category'
-import AddCategory from '../Components/AddCategory'
+import { connect }from 'react-redux';
+import { fetchCategories } from '../APIs/Category';
+import AddCategory from '../Components/AddCategory';
 import CategoryView from "../Components/CategoryView/CategoryView";
+import AllView from '../Components/AllView';
 
 class Navbar extends Component {
   constructor(props) {
@@ -79,7 +80,14 @@ class Navbar extends Component {
                 path="/category/:categoryID"
                 component={CategoryView}
             />
-            <Route path="/addCategory" component={AddCategory}/>
+            <Route 
+              exact
+              path="/addCategory" 
+              component={AddCategory}/>
+            <Route 
+              exact
+              path="/" 
+              component={AllView}/>
           </Switch>
         </main>
       </div>
