@@ -13,7 +13,6 @@ import { PrivateRoute, LoginRoute, SignUpRoute } from '../Utility/Routes';
 class App extends React.Component {
 
   render() {
-
     const { isAuth } = this.props;
 
     return (
