@@ -30,6 +30,7 @@ const EditCategory = ({match, updateParentCategory}) => {
                     .map(k => k.keyword);
             setExcludedKeywords(excludedArr);
             setKeywords(includedArr);
+            setCategoryName(category.name);
         }
         setInitialEditData();
 
@@ -59,7 +60,7 @@ const EditCategory = ({match, updateParentCategory}) => {
             const arr = [...keywords, chip];
             setKeywords(arr);
         }
-        const {keyword} = await EditCategoryAPIService.addKeywordToCategory(category, chip, is_excluded);
+        const { keyword } = await EditCategoryAPIService.addKeywordToCategory(category, chip, is_excluded);
         const arr = [...keywordObj, keyword];
         setKeywordObj(arr);
     }
