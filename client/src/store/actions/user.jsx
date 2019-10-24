@@ -1,5 +1,5 @@
 import firebase from "../../../config/firebase";
-import { createUser } from "../../js/APIs/Users";
+import { createUser, getUser } from "../../js/APIs/Users";
 
 export const LOGIN = "LOGIN";
 export const SIGNUP = "SIGNUP";
@@ -10,15 +10,17 @@ export const login = user => dispatch => {
     .auth()
     .signInWithEmailAndPassword(email, password)
     .then(result => {
-      dispatch({ type: LOGIN, payload: result.user });
+      // local storage
+      dispatch(login_action(result.user));
+      
     })
     .catch(error => {
       console.log(error);
     });
 };
 
-export const signup = user => (dispatch, getState) => {
-  const { email, password } = user;
+export const signup = user_creds => (dispatch, getState) => {
+  const { email, password } = user_creds;
   firebase
     .auth()
     .createUserWithEmailAndPassword(email, password)
@@ -28,8 +30,8 @@ export const signup = user => (dispatch, getState) => {
         email: result.user.email
       };
 
-      createUser(user).then(() => {
-        dispatch(store_user(user));
+      createUser(user).then(returned_user => {
+        dispatch(signup_action(returned_user));
         })
       
     })
@@ -38,7 +40,7 @@ export const signup = user => (dispatch, getState) => {
     });
 };
 
-export const logout = () => dispatch => {
+export const logout = () => () => {
   firebase
     .auth()
     .signOut()
@@ -48,6 +50,6 @@ export const logout = () => dispatch => {
     });
 };
 
-const store_user = (data) => {
-  return { type: SIGNUP, payload: data };
+function set_uuid(uuid) {
+  window.localStorage.setItem("uuid", uuid)
 }

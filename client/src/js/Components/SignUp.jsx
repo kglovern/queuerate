@@ -22,8 +22,6 @@ class SignUp extends React.Component {
     super(props);
 
     this.state = {
-      firstName: '',
-      lastName: '',
       email: '',
       password: '',
     }
@@ -110,14 +108,15 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(signup, dispatch)
 }
 
-const mapStateToProps = state => {
-  return {
-      user: state.user
-  }
-}
+// const mapStateToProps = state => {
+//   return {
+//       user: state.user
+//   }
+// }
 
 export default connect(
-  mapStateToProps,
+  //mapStateToProps,
+  null,
   mapDispatchToProps
 )(SignUp)
   

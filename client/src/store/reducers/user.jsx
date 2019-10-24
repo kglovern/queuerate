@@ -3,7 +3,7 @@ import { LOGIN, SIGNUP } from '../actions/user';
 export default function user(state = null, action) {
     switch (action.type) {
         case LOGIN:
-            return action.payload;
+            return Object.assign({}, state, action['payload']);
         case SIGNUP:
             return Object.assign({}, state, action['payload']);
         default:

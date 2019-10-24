@@ -33,6 +33,7 @@
     "start-win": "node node_modules/webpack-dev-server/bin/webpack-dev-server --mode development",
     "start-prod": "webpack-dev-server --mode production",
     "build": "webpack --mode production",
+    "build-win": "node node_modules/webpack/bin/webpack --mode production",
     "test": "react-scripts test"
   },
   "eslintConfig": {
