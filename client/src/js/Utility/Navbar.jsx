@@ -85,7 +85,7 @@ class Navbar extends Component {
             <Route
                 exact
                 path="/category/:categoryID/edit"
-                component={EditCategory}
+                render={(props) => <EditCategory {...props} updateParentCategory={this.props.fetchCategories} />}
             />
             <Route
               exact
