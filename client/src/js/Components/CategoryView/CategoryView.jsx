@@ -44,7 +44,7 @@ const CategoryView = ({match}) => {
                         {
                             links.map( link => (
                                 <TableRow key={link.id}>
-                                    <TableCell><a href={link.url} target="_blank">{link.link_title}</a></TableCell>
+                                    <TableCell><a href={link.url} target="_blank">{link.link_title || link.url}</a></TableCell>
                                     <TableCell>{moment(link.updated_at).format("h:mm A - MMM Do")}</TableCell>
                                     <TableCell>
                                         {
