@@ -15,6 +15,7 @@ import { fetchCategories } from '../APIs/Category';
 import AddCategory from '../Components/AddCategory';
 import CategoryView from "../Components/CategoryView/CategoryView";
 import AllView from '../Components/AllView';
+import EditCategory from '../Components/EditCategory/EditCategory';
 
 class Navbar extends Component {
   constructor(props) {
@@ -28,6 +29,7 @@ class Navbar extends Component {
 
   render() {
     const { history, classes, categories } = this.props
+
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -80,13 +82,18 @@ class Navbar extends Component {
                 path="/category/:categoryID"
                 component={CategoryView}
             />
-            <Route 
+            <Route
+                exact
+                path="/category/:categoryID/edit"
+                render={(props) => <EditCategory {...props} updateParentCategory={this.props.fetchCategories} />}
+            />
+            <Route
               exact
-              path="/addCategory" 
+              path="/addCategory"
               component={AddCategory}/>
-            <Route 
+            <Route
               exact
-              path="/" 
+              path="/"
               component={AllView}/>
           </Switch>
         </main>
@@ -102,5 +109,6 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = (dispatch) => ({
   fetchCategories: () => dispatch(fetchCategories())
 })
+
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Navbar));

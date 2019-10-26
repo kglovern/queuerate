@@ -14,7 +14,7 @@ export function fetchCategories() {
     }
 }
 
-export const createCategory = category => 
+export const createCategory = category =>
     dispatch => {
             let body = {
                 user_id:"aaabbbcccddd",
@@ -42,5 +42,4 @@ export const createCategory = category =>
                 }).catch(function (error) {
                     console.log(error);
                 });
-
     }
