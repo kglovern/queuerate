@@ -13,12 +13,12 @@ import { PrivateRoute, LoginRoute, SignUpRoute } from '../Utility/Routes';
 
 class App extends React.Component {
 
-  constructor() { 
-    this.isAuth = get_uuid() ? true : false;
+  constructor(props) { 
+    super(props)
   }
-
+ 
   render() {
-
+    const isAuth = get_uuid() ? true : false
     return (
         <Router>
           <Switch>

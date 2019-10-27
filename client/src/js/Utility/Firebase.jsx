@@ -1,20 +1,19 @@
 import firebase from "../../../config/firebase";
 import { createUser } from "../APIs/Users";
 
-export function get_uuid() {
-    return window.localStorage.getItem("uuid")
-}
+export const get_uuid = () =>  window.localStorage.getItem("uuid");
 
-function set_uuid(uuid) {
-    window.localStorage.setItem("uuid", uuid)
-}
+const set_uuid = uuid => window.localStorage.setItem("uuid", uuid);
 
-export const login = user => () => {
+export const login = user => {
     const { email, password } = user;
     firebase
         .auth()
         .signInWithEmailAndPassword(email, password)
-        .then(result => set_uuid(result.user.uid))
+        .then(result => {
+            set_uuid(result.user.uid);
+            window.location.reload();
+        })
         .catch(error => {
             console.log(error);
         });
@@ -31,7 +30,11 @@ export const signup = user_creds => {
                 email: result.user.email
             };
             //TODO: remove user from firebase if createUser fails
-            createUser(user).then(result => {console.log(result); set_uuid(result.data.uuid)})
+            createUser(user).then(result => {
+                const { data: { data: { user: { uuid } } } } = result;
+                set_uuid(uuid);
+                window.location.reload();
+            })
         })
         .catch(error => {
             console.log(error);

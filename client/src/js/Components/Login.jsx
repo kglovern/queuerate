@@ -15,12 +15,9 @@ import Container from '@material-ui/core/Container';
 
 import './Login.css';
 
-
 class Login extends React.Component {
-
-	constructor() {
-		super();
-
+	constructor(props) {
+		super(props);
 		this.state = {
 			email: '',
 			password: '',
@@ -29,7 +26,6 @@ class Login extends React.Component {
 
 	handleLogin = (event) => {
 		login(this.state);
-		history.push("/");
 		event.preventDefault();
 	}
 
@@ -39,8 +35,7 @@ class Login extends React.Component {
 
 		this.setState({
 			[name]: value
-		}
-		);
+		});
 	}
 
 	render() {

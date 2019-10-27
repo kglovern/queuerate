@@ -12,12 +12,11 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import { withRouter } from "react-router-dom";
 
 import './SignUp.css';
 
-
 class SignUp extends React.Component {
-  
   constructor(props) {
     super(props);
     
@@ -29,9 +28,7 @@ class SignUp extends React.Component {
   
   handleSignUp = (event) => {
     signup(this.state);
-    history = useHistory();
-    history.push("/");
-    //event.preventDefault();
+    event.preventDefault(); 
   }
 
   changeHandler = event => {
@@ -104,4 +101,4 @@ class SignUp extends React.Component {
   }
 }
 
-export default SignUp;
+export default withRouter(SignUp);
