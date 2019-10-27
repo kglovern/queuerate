@@ -1,9 +1,11 @@
 import firebase from "../../../config/firebase";
 import { createUser } from "../APIs/Users";
 
-export const get_uuid = () =>  window.localStorage.getItem("uuid");
+export const get_uuid = () => window.localStorage.getItem("uuid");
 
 const set_uuid = uuid => window.localStorage.setItem("uuid", uuid);
+
+const remove_uuid = () => window.localStorage.removeItem("uuid")
 
 export const login = user => {
     const { email, password } = user;
@@ -41,11 +43,14 @@ export const signup = user_creds => {
         });
 };
 
-export const logout = () => () => {
+export const logout = () => {
     firebase
         .auth()
         .signOut()
-        .then(() => { set_uuid(null) })
+        .then(() => {
+            remove_uuid();
+            window.location.reload();
+        })
         .catch(error => {
             console.log(error);
         });

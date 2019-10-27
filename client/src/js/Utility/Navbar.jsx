@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Button from '@material-ui/core/Button';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -16,6 +17,8 @@ import AddCategory from '../Components/AddCategory'
 import CategoryView from "../Components/CategoryView/CategoryView";
 import { logout } from "./Firebase"
 
+import "./Navbar.css"
+
 class Navbar extends Component {
   constructor(props) {
     super(props);
@@ -24,6 +27,11 @@ class Navbar extends Component {
   componentDidMount() {
     const { fetchCategories } = this.props
     fetchCategories()
+  }
+
+  handleLogout = (event) => {
+    logout();
+    event.preventDefault();
   }
 
   render() {
@@ -36,6 +44,15 @@ class Navbar extends Component {
             {/* <Typography variant="h6" noWrap>
             Clipped drawer
           </Typography> */}
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  className="logout"
+                  onClick={this.handleLogout}
+                >
+                  Log Out
+            </Button>
           </Toolbar>
         </AppBar>
         <Drawer
