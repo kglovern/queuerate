@@ -30,9 +30,9 @@
     "webpack-dev-server": "^3.8.2"
   },
   "scripts": {
-    "start": "webpack-dev-server --mode development",
+    "start": "webpack-dev-server --mode development --port 8081",
     "start-win": "node node_modules/webpack-dev-server/bin/webpack-dev-server --mode development",
-    "start-prod": "webpack-dev-server --mode production",
+    "start-prod": "webpack-dev-server --mode production --port 8081",
     "build": "webpack --mode production",
     "test": "react-scripts test"
   },
