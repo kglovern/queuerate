@@ -10,10 +10,11 @@ import { Route, Switch, Link } from "react-router-dom";
 import { withRouter } from 'react-router-dom'
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
-import { connect }from 'react-redux'
+import { connect } from 'react-redux'
 import { fetchCategories } from '../APIs/Category'
 import AddCategory from '../Components/AddCategory'
 import CategoryView from "../Components/CategoryView/CategoryView";
+import { logout } from "./Firebase"
 
 class Navbar extends Component {
   constructor(props) {
