@@ -7,7 +7,7 @@ import Button from "@material-ui/core/Button";
 import EditCategoryAPIService from "./EditCategoryAPIService";
 
 
-const EditCategory = ({match, updateParentCategory}) => {
+const EditCategory = ({match, updateParentCategory, fetchCategories}) => {
     const { categoryID } = match.params;
     // Local state
     const [category, setCategory] = useState({});
@@ -117,13 +117,7 @@ const EditCategory = ({match, updateParentCategory}) => {
                     onDelete={(chip, index) => handleDeleteKeyword(chip, index, true)}
                     onAdd={(chip) => handleAddKeyword(chip, true)}
                 />
-                <br />
-                <Button
-                    variant="contained"
-                    color="primary"
-                >
-                    Save Changes
-                </Button>
+                <br />                
             </FormControl>
     );
 };
