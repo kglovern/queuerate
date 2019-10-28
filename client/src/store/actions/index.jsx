@@ -9,4 +9,3 @@ export default {
     store_categories,
     store_category_links
 }
-

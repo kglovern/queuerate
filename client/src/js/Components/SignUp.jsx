@@ -1,7 +1,6 @@
 import React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import signup from '../../store/actions/';
+import { signup } from "../Utility/Firebase";
+import { useHistory } from "react-router-dom";
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Avatar from '@material-ui/core/Avatar';
@@ -13,25 +12,23 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import { withRouter } from "react-router-dom";
 
 import './SignUp.css';
 
 class SignUp extends React.Component {
-
   constructor(props) {
     super(props);
-
+    
     this.state = {
-      firstName: '',
-      lastName: '',
       email: '',
       password: '',
     }
   }
-
+  
   handleSignUp = (event) => {
-    this.props.signup(this.state);
-    event.preventDefault();
+    signup(this.state);
+    event.preventDefault(); 
   }
 
   changeHandler = event => {
@@ -39,22 +36,21 @@ class SignUp extends React.Component {
     const value = event.target.value;
 
     this.setState({
-          [name]: value
-        }
-    ); 
-}
+      [name]: value
+    });
+  }
 
-	render() {
-		return <Container component="main" maxWidth="xs">
-		<CssBaseline />
-		<div className="paper">
-		  <Avatar className="avatar">
-			<LockOutlinedIcon />
-		  </Avatar>
-		  <Typography component="h1" variant="h5">
-			Sign Up
+  render() {
+    return <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <div className="paper">
+        <Avatar className="avatar">
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Sign Up
 		  </Typography>
-		  <form className="form" noValidate>
+        <form className="form" noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -99,25 +95,10 @@ class SignUp extends React.Component {
               </Link>
             </Grid>
           </Grid>
-		  </form>
-		</div>
-	  </Container>
-	}
-}
-
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(signup, dispatch)
-}
-
-const mapStateToProps = state => {
-  return {
-      user: state.user
+        </form>
+      </div>
+    </Container>
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SignUp)
-  
+export default withRouter(SignUp);
