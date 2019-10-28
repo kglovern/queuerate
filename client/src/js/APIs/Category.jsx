@@ -2,9 +2,9 @@ import { store_categories } from '../../store/actions/category'
 import { get, post } from '../Utility/axios';
 import { createKeyword } from './Keyword'
 
-export function fetchCategories() {
+export function fetchCategories(uuid) {
     return dispatch => {
-        get('/users/aaabbbcccddd')
+        get(`/users/${uuid}`)
             .then(function (response) {
                 dispatch(store_categories(response['data']['data']['user']['categories']));
             })
@@ -16,13 +16,14 @@ export function fetchCategories() {
 
 export const createCategory = category =>
     dispatch => {
+            const { user_id, category_name } = category
             let body = {
-                user_id:"aaabbbcccddd",
-                category_name: category['category_name']
+                user_id: user_id,
+                category_name: category_name
             }
             post('/categories/', body)
                 .then(response => {
-                    dispatch(fetchCategories());
+                    dispatch(fetchCategories(user_id));
                     const { contain_tags, do_not_contain_tags } = category
                     const { id } = response['data']['data']['category']
                     contain_tags.forEach(tag_name => {

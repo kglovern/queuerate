@@ -10,8 +10,9 @@ import moment from 'moment';
 import MarkAsRead from './CategoryView/MarkAsRead';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { fetchCategories } from '../APIs/Category';
 import { fetchLinks, createLink } from '../APIs/Link';
+import { get_uuid } from "../Utility/Firebase"
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 import './AllView.css';
 
@@ -27,10 +28,11 @@ class AllView extends Component {
 
     handleSubmit() {
         const { link_name } = this.state
-        const { uuid, createLink } = this.props
+        const { createLink } = this.props
+
         if (link_name) {
             createLink({
-                user_id: "aaabbbcccddd",
+                user_id: get_uuid(),
                 url: link_name
             })
             this.setState({
@@ -47,13 +49,13 @@ class AllView extends Component {
     }
 
     componentDidMount() {
-        const { fetchLinks, uuid } = this.props;
-        fetchLinks("aaabbbcccddd");
+        const { fetchLinks } = this.props;
+        fetchLinks(get_uuid());
     }
 
     render() {
         const { link_name } = this.state
-        const { links } = this.props
+        const { links, fetchLinks } = this.props
         return (
             <div>
                 <div style={{ display: 'flex' }}>
@@ -73,6 +75,11 @@ class AllView extends Component {
                     >
                         Add
                     </Button>
+                    <Button
+                        onClick={() => fetchLinks(get_uuid())}
+                    >
+                    <RefreshIcon />
+                    </Button> 
                 </div>
                 <br /><br />
                 <Paper>
@@ -129,7 +136,6 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const mapStateToProps = state => ({
-    uuid: state.user ? state.user.uuid ? state.user.uuid : "" : "",
     links: state.link ? state.link.links : []
 })
 

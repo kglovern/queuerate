@@ -6,6 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import ChipInput from 'material-ui-chip-input';
 import Button from '@material-ui/core/Button';
 import { createCategory } from "../APIs/Category";
+import { get_uuid } from "../Utility/Firebase"
 
 class AddCategory extends Component {
     constructor(props) {
@@ -13,7 +14,7 @@ class AddCategory extends Component {
         this.state = {
             contain_tags: [],
             do_not_contain_tags: [],
-            name
+            name: ""
         }
         this.handleAddChip = this.handleAddChip.bind(this);
         this.handleDeleteChip = this.handleDeleteChip.bind(this);
@@ -54,18 +55,20 @@ class AddCategory extends Component {
         }
     }
 
-
     handleSubmit(event) {
-        const { createCategory, uuid } = this.props
+        const { createCategory } = this.props
         const { name, contain_tags, do_not_contain_tags } = this.state
 
-        // TODO: uncomment, when login works correctly
         createCategory({
-            user_id: "aaabbbcccddd",
-            // user_id: uuid,
+            user_id: get_uuid(),
             category_name: name,
             contain_tags: contain_tags,
             do_not_contain_tags: do_not_contain_tags
+        })
+        this.setState({
+            contain_tags: [],
+            do_not_contain_tags: [],
+            name: ""
         })
         event.preventDefault();
     }
@@ -128,11 +131,7 @@ const mapDispatchToProps = (dispatch) => ({
     createCategory: (category_data) => dispatch(createCategory(category_data))
 })
 
-const mapStateToProps = state => ({
-    uuid: state.user ? state.user.uuid ? state.user.uuid : "": ""
-})
-
 export default connect(
-    mapStateToProps,
+    null,
     mapDispatchToProps
 )(AddCategory)

@@ -20,6 +20,7 @@ import AllView from '../Components/AllView';
 import EditCategory from '../Components/EditCategory/EditCategory';
 import Divider from '@material-ui/core/Divider';
 import UncategorizedView from '../Components/UncategorizedView';
+import { get_uuid } from "../Utility/Firebase"
 
 import './Navbar.css';
 
@@ -30,7 +31,7 @@ class Navbar extends Component {
 
   componentDidMount() {
     const { fetchCategories } = this.props
-    fetchCategories()
+    fetchCategories(get_uuid())
   }
 
   handleLogout = (event) => {
@@ -137,7 +138,7 @@ const mapStateToProps = (state, ownProps) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchCategories: () => dispatch(fetchCategories())
+  fetchCategories: (uuid) => dispatch(fetchCategories(uuid))
 })
 
 

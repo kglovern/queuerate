@@ -9,6 +9,7 @@ import Paper from '@material-ui/core/Paper';
 import moment from 'moment';
 import MarkAsRead from './CategoryView/MarkAsRead';
 import { fetchUncategorizedLinks } from '../APIs/Link';
+import { get_uuid } from "../Utility/Firebase"
 
 import './AllView.css';
 
@@ -18,8 +19,8 @@ class UncategorizedView extends Component {
     }
 
     componentDidMount() {
-        const { fetchUncategorizedLinks, uuid } = this.props;
-        fetchUncategorizedLinks("aaabbbcccddd");
+        const { fetchUncategorizedLinks } = this.props;
+        fetchUncategorizedLinks(get_uuid());
     }
 
     render() {
@@ -80,7 +81,6 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const mapStateToProps = state => ({
-    uuid: state.user ? state.user.uuid ? state.user.uuid : "" : "",
     links: state.link ? state.link.links : []
 })
 
