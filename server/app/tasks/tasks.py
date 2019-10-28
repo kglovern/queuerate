@@ -6,6 +6,7 @@ from app.models import Category, Link, ProcessingState
 from app import db
 import requests
 import pke
+import re
 
 logger = get_task_logger(__name__)
 
@@ -101,7 +102,8 @@ def categorize_entity(message):
     for category in user_categories:
         add_link_to_category = False
         for cat_keyword in category.keywords:
-            if cat_keyword.keyword in key_dict.keys():
+            p = re.compile(f"{cat_keyword.keyword}", re.IGNORECASE)
+            if sum(1 for _ in filter(p.search, key_dict.keys())):
                 if not cat_keyword.is_excluded:
                     print(f"Found matching non-excluded keyword - {cat_keyword.keyword}")
                     add_link_to_category = True

@@ -118,12 +118,6 @@ const EditCategory = ({match, updateParentCategory}) => {
                     onAdd={(chip) => handleAddKeyword(chip, true)}
                 />
                 <br />
-                <Button
-                    variant="contained"
-                    color="primary"
-                >
-                    Save Changes
-                </Button>
             </FormControl>
     );
 };
