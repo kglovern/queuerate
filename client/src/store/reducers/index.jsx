@@ -1,6 +1,10 @@
-import { combineReducers } from 'redux'
-import category from './category'
+import { combineReducers } from 'redux';
+import category from './category';
+import user from './user';
+import link from './link';
 
 export default combineReducers({
-    category
+    category,
+    user,
+    link
 })

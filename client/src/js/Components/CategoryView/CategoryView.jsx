@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom';
 import CategoryViewAPIService from "./CategoryViewAPIService";
 import MarkAsRead from './MarkAsRead';
 import Table from '@material-ui/core/Table';
@@ -7,6 +8,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { IconButton } from '@material-ui/core';
+import SettingsIcon from '@material-ui/icons/Settings';
 import moment from 'moment';
 
 const CategoryView = ({match}) => {
@@ -29,7 +32,15 @@ const CategoryView = ({match}) => {
     }, [categoryID]);
     return (
         <div>
-            <h1>{category.category_name}</h1>
+            <h1>
+                {category.category_name}
+                <Link
+                    to={`/category/${categoryID}/edit`}>
+                    <IconButton aria-label="edit_category">
+                        <SettingsIcon />
+                    </IconButton>
+                </Link>
+            </h1>
             <Paper>
                 <Table>
                     <TableHead>
@@ -44,7 +55,7 @@ const CategoryView = ({match}) => {
                         {
                             links.map( link => (
                                 <TableRow key={link.id}>
-                                    <TableCell><a href={link.url} target="_blank">{link.link_title}</a></TableCell>
+                                    <TableCell><a href={link.url} target="_blank">{link.link_title || link.url}</a></TableCell>
                                     <TableCell>{moment(link.updated_at).format("h:mm A - MMM Do")}</TableCell>
                                     <TableCell>
                                         {

@@ -2,3 +2,8 @@
     margin-left: auto !important;
     background-color: #1976d2 !important;
 }
+
+.MuiListItem-root.add-button-box {
+    display: flex;
+    justify-content: flex-end;
+}

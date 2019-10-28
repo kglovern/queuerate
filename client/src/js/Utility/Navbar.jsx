@@ -16,8 +16,12 @@ import { fetchCategories } from '../APIs/Category'
 import AddCategory from '../Components/AddCategory'
 import CategoryView from "../Components/CategoryView/CategoryView";
 import { logout } from "./Firebase"
+import AllView from '../Components/AllView';
+import EditCategory from '../Components/EditCategory/EditCategory';
+import Divider from '@material-ui/core/Divider';
+import UncategorizedView from '../Components/UncategorizedView';
 
-import "./Navbar.css"
+import './Navbar.css';
 
 class Navbar extends Component {
   constructor(props) {
@@ -36,6 +40,7 @@ class Navbar extends Component {
 
   render() {
     const { history, classes, categories } = this.props
+
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -44,14 +49,14 @@ class Navbar extends Component {
             {/* <Typography variant="h6" noWrap>
             Clipped drawer
           </Typography> */}
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  className="logout"
-                  onClick={this.handleLogout}
-                >
-                  Log Out
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              className="logout"
+              onClick={this.handleLogout}
+            >
+              Log Out
             </Button>
           </Toolbar>
         </AppBar>
@@ -65,10 +70,10 @@ class Navbar extends Component {
           <div className={classes.toolbar} />
           <List>
             <ListItem button
-                // key={index}
-                onClick={() => history.push('/')}>
-                <ListItemText primary={'All'} />
-              </ListItem>
+              // key={index}
+              onClick={() => history.push('/')}>
+              <ListItemText primary={'All'} />
+            </ListItem>
             {categories.map((obj, index) => (
               <ListItem button
                 key={index}
@@ -76,8 +81,14 @@ class Navbar extends Component {
                 <ListItemText primary={obj.category_name} />
               </ListItem>
             ))}
+            <Divider />
+            <ListItem button
+              // key={index}
+              onClick={() => history.push('/uncategorized')}>
+              <ListItemText primary={'Uncategorized'} />
+            </ListItem>
           </List>
-          <ListItem>
+          <ListItem className="add-button-box" >
             <Fab
               size="small"
               color="secondary"
@@ -93,11 +104,27 @@ class Navbar extends Component {
           <div className={classes.toolbar} />
           <Switch>
             <Route
-                exact
-                path="/category/:categoryID"
-                component={CategoryView}
+              exact
+              path="/category/:categoryID"
+              component={CategoryView}
             />
-            <Route path="/addCategory" component={AddCategory}/>
+            <Route
+              exact
+              path="/category/:categoryID/edit"
+              render={(props) => <EditCategory {...props} updateParentCategory={this.props.fetchCategories} />}
+            />
+            <Route
+              exact
+              path="/addCategory"
+              component={AddCategory} />
+            <Route
+              exact
+              path="/uncategorized"
+              component={UncategorizedView} />
+            <Route
+              exact
+              path="/"
+              component={AllView} />
           </Switch>
         </main>
       </div>
@@ -112,5 +139,6 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = (dispatch) => ({
   fetchCategories: () => dispatch(fetchCategories())
 })
+
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Navbar));
