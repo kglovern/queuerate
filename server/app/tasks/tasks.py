@@ -103,7 +103,7 @@ def categorize_entity(message):
         add_link_to_category = False
         for cat_keyword in category.keywords:
             p = None
-            if len(cat_keyword) < 3:  # handle short phrases more gracefully
+            if len(cat_keyword.keyword) < 3:  # handle short phrases more gracefully
                 p = re.compile(f"\b{cat_keyword.keyword}\b", re.IGNORECASE)
             else:
                 p = re.compile(f"{cat_keyword.keyword}", re.IGNORECASE)
