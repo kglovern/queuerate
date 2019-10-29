@@ -7,7 +7,7 @@ import Button from "@material-ui/core/Button";
 import EditCategoryAPIService from "./EditCategoryAPIService";
 
 
-const EditCategory = ({match, updateParentCategory, fetchCategories}) => {
+const EditCategory = ({match, updateParentCategory, uuid}) => {
     const { categoryID } = match.params;
     // Local state
     const [category, setCategory] = useState({});
@@ -78,7 +78,7 @@ const EditCategory = ({match, updateParentCategory, fetchCategories}) => {
             };
             setCategory(catObj);
             await EditCategoryAPIService.updateCategoryDetails(catObj);
-            updateParentCategory();
+            updateParentCategory(uuid);
         }
     }
 
@@ -117,7 +117,7 @@ const EditCategory = ({match, updateParentCategory, fetchCategories}) => {
                     onDelete={(chip, index) => handleDeleteKeyword(chip, index, true)}
                     onAdd={(chip) => handleAddKeyword(chip, true)}
                 />
-                <br />                
+                <br />
             </FormControl>
     );
 };
