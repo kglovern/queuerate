@@ -102,7 +102,11 @@ def categorize_entity(message):
     for category in user_categories:
         add_link_to_category = False
         for cat_keyword in category.keywords:
-            p = re.compile(f"{cat_keyword.keyword}", re.IGNORECASE)
+            p = None
+            if len(cat_keyword) < 3:  # handle short phrases more gracefully
+                p = re.compile(f"\b{cat_keyword.keyword}\b", re.IGNORECASE)
+            else:
+                p = re.compile(f"{cat_keyword.keyword}", re.IGNORECASE)
             if sum(1 for _ in filter(p.search, key_dict.keys())):
                 if not cat_keyword.is_excluded:
                     print(f"Found matching non-excluded keyword - {cat_keyword.keyword}")
