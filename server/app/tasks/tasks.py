@@ -7,6 +7,7 @@ from app import db
 import requests
 import pke
 import re
+import string
 
 logger = get_task_logger(__name__)
 
@@ -92,6 +93,7 @@ def get_keywords_from_content(message):
 @celery.task
 def categorize_entity(message):
     print("Step 4 - matching keywords")
+    punctuation_table = str.maketrans(dict.fromkeys(string.punctuation))
     key_dict = map_keywords_to_dict(message["keywords"])
     print(key_dict)
     user_categories = Category.query.filter_by(user_id=message["uuid"]).all()
@@ -102,16 +104,16 @@ def categorize_entity(message):
     for category in user_categories:
         add_link_to_category = False
         for cat_keyword in category.keywords:
-            p = None
-            if len(cat_keyword.keyword) < 3:  # handle short phrases more gracefully
-                p = re.compile(f"\b{cat_keyword.keyword}\b", re.IGNORECASE)
-            else:
-                p = re.compile(f"{cat_keyword.keyword}", re.IGNORECASE)
-            if sum(1 for _ in filter(p.search, key_dict.keys())):
+            # Remove punctuation - this doesn't include UTF8 to note for future
+            sanitized_keyword = str.lower(cat_keyword.keyword.translate(punctuation_table))
+            p = re.compile(r"\b(%s)\b" % sanitized_keyword, re.IGNORECASE)  # always look for keyword atomically
+            filtered_keywords = list(filter(p.search, key_dict.keys()))
+            if len(filtered_keywords) > 0:
                 if not cat_keyword.is_excluded:
                     print(f"Found matching non-excluded keyword - {cat_keyword.keyword}")
                     add_link_to_category = True
                 else:
+                    print(f"Found matching exclusive keyword - {cat_keyword.keyword}")
                     add_link_to_category = False
                     break
         if add_link_to_category:
