@@ -23,6 +23,7 @@ import UncategorizedView from '../Components/UncategorizedView';
 import { get_uuid } from "../Utility/Firebase"
 
 import './Navbar.css';
+import ManageLink from "../Components/ManageLink/ManageLink";
 
 class Navbar extends Component {
   constructor(props) {
@@ -114,6 +115,10 @@ class Navbar extends Component {
               path="/category/:categoryID/edit"
               render={(props) => <EditCategory {...props}  uuid={get_uuid()} updateParentCategory={(uuid) => this.props.fetchCategories(uuid)} />}
             />
+            <Route
+                exact
+                path="/link/:linkID/manage"
+                component={ManageLink} />
             <Route
               exact
               path="/addCategory"

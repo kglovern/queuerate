@@ -49,6 +49,7 @@ const CategoryView = ({match}) => {
                             <TableCell>Last Updated</TableCell>
                             <TableCell>Categories</TableCell>
                             <TableCell>Mark as Read</TableCell>
+                            <TableCell></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -68,6 +69,14 @@ const CategoryView = ({match}) => {
                                         <MarkAsRead linkId={link.id}
                                                     read_state={link.is_marked_as_read}
                                         />
+                                    </TableCell>
+                                    <TableCell size="small">
+                                        <Link
+                                            to={`/link/${link.id}/manage`}>
+                                            <IconButton aria-label="manage_link">
+                                                <SettingsIcon />
+                                            </IconButton>
+                                        </Link>
                                     </TableCell>
                                 </TableRow>
                             ))

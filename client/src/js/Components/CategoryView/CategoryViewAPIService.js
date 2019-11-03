@@ -7,6 +7,7 @@ export default {
             return category;
         } catch (e) {
             console.log(e);
+            return {}
         }
     },
     fetchCategoryLinks: async (id) => {
@@ -15,6 +16,7 @@ export default {
             return links
         } catch (e) {
             console.log(e);
+            return [];
         }
     },
     changeLinkReadState: async (id, is_read) => {
@@ -26,6 +28,7 @@ export default {
             }
         } catch (e) {
             console.log(e);
+            return {}
         }
     }
 }

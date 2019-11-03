@@ -10,8 +10,11 @@ import moment from 'moment';
 import MarkAsRead from './CategoryView/MarkAsRead';
 import { fetchUncategorizedLinks } from '../APIs/Link';
 import { get_uuid } from "../Utility/Firebase"
+import SettingsIcon from '@material-ui/icons/Settings';
 
 import './AllView.css';
+import {Link} from "react-router-dom";
+import {IconButton} from "@material-ui/core";
 
 class UncategorizedView extends Component {
     constructor(props) {
@@ -36,6 +39,7 @@ class UncategorizedView extends Component {
                                 <TableCell>Created</TableCell>
                                 {/* <TableCell>Categories</TableCell> */}
                                 <TableCell>Mark as Read</TableCell>
+                                <TableCell />
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -47,16 +51,16 @@ class UncategorizedView extends Component {
                                             <TableCell>{moment(link.updated_at).format("h:mm A - MMM Do")}</TableCell>
                                             {/* <TableCell>
                                                 {
-                                                    link.categories.length > 0 ? 
+                                                    link.categories.length > 0 ?
                                                         link.categories.map((link_category, index) => {
                                                             return (
-                                                                <span 
+                                                                <span
                                                                     key={link_category.id}>
-                                                                    {link_category.category_name} 
+                                                                    {link_category.category_name}
                                                                     {index + 1 != link.categories.length ? ", " : "" }
                                                                 </span>
                                                             )
-                                                        }) : 
+                                                        }) :
                                                         "Uncategorized"
                                                 }
                                             </TableCell> */}
@@ -64,6 +68,14 @@ class UncategorizedView extends Component {
                                                 <MarkAsRead linkId={link.id}
                                                     read_state={link.is_marked_as_read}
                                                 />
+                                            </TableCell>
+                                            <TableCell>
+                                                <Link
+                                                    to={`/link/${link.id}/manage`}>
+                                                    <IconButton aria-label="manage_link">
+                                                        <SettingsIcon />
+                                                    </IconButton>
+                                                </Link>
                                             </TableCell>
                                         </TableRow>)
                                 })

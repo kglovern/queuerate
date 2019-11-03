@@ -26,6 +26,7 @@
     "redux-thunk": "^2.3.0",
     "regenerator-runtime": "^0.13.3",
     "style-loader": "^1.0.0",
+    "styled-components": "^4.4.1",
     "webpack-cli": "^3.3.9",
     "webpack-dev-server": "^3.8.2"
   },

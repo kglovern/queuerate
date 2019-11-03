@@ -13,8 +13,8 @@ module.exports = {
     new HtmlWebpackPlugin({
       hash: false,
       title: 'Curation Page',
-      template: './index.html',
-      filename: "./index.html" //relative to root of the application
+      template: 'index.html',
+      filename: "testindex.html" //relative to root of the application
     }),
     new webpack.DefinePlugin({
       "process.env.API_KEY": JSON.stringify(
