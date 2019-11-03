@@ -214,3 +214,30 @@ def categorize_link(link_id):
     """
     raise NotImplementedError("Replay not yet implemented.")
 
+
+@link_controller.route('/<link_id>/categorize', methods=['POST'])
+def recategorize_link(link_id):
+    try:
+        data = request.json
+        print(data)
+        link = Link.query.get(link_id)
+        if link:
+            link.categories = []  # Remove all current relations
+            to_add = [category for category in data if category["is_categorized_as"] is True]
+            for category_to_add in to_add:
+                category = Category.query.get(category_to_add["id"])
+                link.categories.append(category)
+            db.session.commit()
+        else:
+            return APIResponseBuilder.failure({
+                "invalid_id": f"Unable to find link with ID of {link_id}"
+            })
+        return APIResponseBuilder.success({
+            "link": link
+        })
+    except SQLAlchemyError as e:
+        return APIResponseBuilder.error(f"Issue running query: {e}")
+    except Exception as e:
+        print(e)
+        return APIResponseBuilder.error(f"Error encountered: {e}")
+
