@@ -60,8 +60,11 @@ const CategoryView = ({match}) => {
                                     <TableCell>{moment(link.updated_at).format("h:mm A - MMM Do")}</TableCell>
                                     <TableCell>
                                         {
-                                            link.categories.map(link_category => (
-                                                <span key={link_category.id}>{link_category.category_name}</span>
+                                            link.categories.map((link_category, index) => (
+                                                <span key={link_category.id}>
+                                                    {link_category.category_name}
+                                                    {index + 1 != link.categories.length ? ", " : "" }
+                                                </span>
                                             ))
                                         }
                                     </TableCell>
