@@ -141,6 +141,7 @@ class Link(Base):
     link_description = db.Column(db.String(1024))
     is_marked_as_read = db.Column(db.Boolean, default=False)
     processing_state = db.Column(db.Enum(ProcessingState), default=ProcessingState.UNPROCESSED)
+    relevant_keywords = db.relationship('RelevantKeyword', backref='link', lazy='dynamic')
 
     @property
     def serialized(self):
@@ -161,4 +162,20 @@ class Link(Base):
             'created_at': self.created_at,
             'updated_at': self.updated_at,
             'categories': categories_list
+        }
+
+
+class RelevantKeyword(Base):
+    __table_name__ = "Relevant_Keyword"
+    keyword = db.Column(db.String(200), nullable=False)
+    relevance = db.Column(db.Float, nullable=False)
+    did_match = db.Column(db.Boolean, default=False)
+    link_id = db.Column(db.Integer, db.ForeignKey('link.id'), nullable=False)
+
+    @property
+    def serialized(self):
+        return {
+            'keyword': self.keyword,
+            'relevance': self.relevance,
+            'did_match': self.did_match
         }
