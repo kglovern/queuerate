@@ -19,6 +19,15 @@ export default {
             return {};
         }
     },
+    fetchAllRelevantKeywords: async (linkID) => {
+        try {
+            const { data: { data: { keywords } } } = await axiosObj.get(`/relevant_keywords/${linkID}`);
+            return keywords;
+        }  catch (e) {
+            console.log(e);
+            return []
+        }
+    },
     updateLinkCategories: async (linkID, categoryInfo) => {
         const URL = `/links/${linkID}/categorize`;
         // map it back to an array before posting since we don't need keys

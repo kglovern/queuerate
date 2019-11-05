@@ -20,9 +20,11 @@ const ManageLink = ({match}) => {
 
         const fetchInitialData = async () => {
             const linkObj = await ManageLinkAPIService.fetchLinkMetadata(linkID);
+            const rkObj = await ManageLinkAPIService.fetchAllRelevantKeywords(linkID);
             const linkCurCategories = linkObj.categories;
             const categoriesObj = await ManageLinkAPIService.fetchAllUserCategories(linkObj.user_id);
             setCategories(ManageLinkAPIService.transformCategoryArr(categoriesObj, linkCurCategories));
+            setRelevantKeywords(rkObj);
             setLink(linkObj);
         }
         fetchInitialData();
@@ -50,23 +52,19 @@ const ManageLink = ({match}) => {
             <h1><a href={link.url} target="_blank">{link.link_title}</a></h1>
             <Grid container justify="space-around" spacing={1}>
                 <Grid item xs={7}>
-                    <Paper>
+                    <Paper style={{padding: '1em'}}>
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Matched</TableCell>
-                                    <TableCell>Keyword</TableCell>
-                                    <TableCell>Relevance Rating</TableCell>
+                                    <TableCell><b>Keyword</b></TableCell>
+                                    <TableCell><b>Relevance Rating</b></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {relevantKeywords.map(row => (
-                                    <TableRow key={row.name}>
-                                        <TableCell component="th" scope="row">
-                                            {row.name}
-                                        </TableCell>
-                                        <TableCell align="right">{row.keyword}</TableCell>
-                                        <TableCell align="right">{row.relevance}</TableCell>
+                                    <TableRow key={row.id}>
+                                        <TableCell align="left"><i>{row.keyword}</i></TableCell>
+                                        <TableCell align="left">{row.relevance}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>

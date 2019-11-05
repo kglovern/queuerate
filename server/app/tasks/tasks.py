@@ -2,7 +2,7 @@ from celery import Celery, chain
 from celery.utils.log import get_task_logger
 from celery.exceptions import CeleryError
 from bs4 import BeautifulSoup
-from app.models import Category, Link, ProcessingState
+from app.models import Category, Link, ProcessingState, RelevantKeyword
 from app import db
 import requests
 import pke
@@ -99,7 +99,15 @@ def categorize_entity(message):
     user_categories = Category.query.filter_by(user_id=message["uuid"]).all()
 
     link = Link.query.get(message["link_id"])
-    # TODO: Validate we received a link
+
+    # Insert all relevant keywords for a link -false as default, we can make them true later
+    for keyword in key_dict.keys():
+        rk = RelevantKeyword(keyword=keyword,
+                             link_id=link.id,
+                             relevance=key_dict[keyword],
+                             did_match=False)
+        link.relevant_keywords.append(rk)
+    db.session.commit()
 
     for category in user_categories:
         add_link_to_category = False
