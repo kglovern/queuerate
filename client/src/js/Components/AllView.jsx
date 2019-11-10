@@ -7,13 +7,15 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import moment from 'moment';
-import MarkAsRead from './CategoryView/MarkAsRead';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { fetchLinks, createLink } from '../APIs/Link';
+import { fetchLinks, createLink, markAsRead, markAsUnread } from '../APIs/Link';
 import { get_uuid } from "../Utility/Firebase"
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SettingsIcon from '@material-ui/icons/Settings';
+import Checkbox from '@material-ui/core/Checkbox';
+import Star from '@material-ui/icons/Star';
+import StarBorder from '@material-ui/icons/StarBorder';
 
 import './AllView.css';
 import {Link} from "react-router-dom";
@@ -27,6 +29,7 @@ class AllView extends Component {
         }
         this.onChange = this.onChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.toggleReadState = this.toggleReadState.bind(this);
     }
 
     handleSubmit() {
@@ -56,10 +59,20 @@ class AllView extends Component {
         fetchLinks(get_uuid());
     }
 
+    toggleReadState(id, read_state) {
+        const { markAsRead, markAsUnread } = this.props;
+        if(read_state) {
+            markAsRead(id, get_uuid());
+        } else {
+            markAsUnread(id, get_uuid());
+        }
+    }
+
     render() {
         const { link_name } = this.state
         const { links, fetchLinks } = this.props
-        return (
+
+        return ( 
             <div>
                 <div style={{ display: 'flex' }}>
                     <TextField
@@ -118,9 +131,11 @@ class AllView extends Component {
                                                         "Uncategorized"
                                                 }
                                             </TableCell>
-                                            <TableCell size="small">
-                                                <MarkAsRead linkId={link.id}
-                                                    read_state={link.is_marked_as_read}
+                                            <TableCell size="small">                                               
+                                                 <Checkbox icon={<StarBorder />}
+                                                    checkedIcon={<Star />}
+                                                    checked={link.is_marked_as_read}
+                                                    onClick={() => this.toggleReadState(link.id, !link.is_marked_as_read)}
                                                 />
                                             </TableCell>
                                             <TableCell>
@@ -145,6 +160,8 @@ class AllView extends Component {
 const mapDispatchToProps = (dispatch) => ({
     createLink: (link_data) => dispatch(createLink(link_data)),
     fetchLinks: (uuid) => dispatch(fetchLinks(uuid)),
+    markAsRead: (id,uuid) => dispatch(markAsRead(id, uuid)),
+    markAsUnread: (id, uuid) => dispatch(markAsUnread(id, uuid))
 })
 
 const mapStateToProps = state => ({

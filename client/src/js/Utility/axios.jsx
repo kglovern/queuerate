@@ -16,3 +16,7 @@ export const post = (url, data) => {
 export const get = url => {
     return axiosObj.get(url);
 }
+
+export const patch = url => {
+  return axiosObj.patch(url);
+}
