@@ -204,7 +204,6 @@ def mark_link_as_unread(link_id):
         return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
-# TODO - Will be replay link endpoint
 @link_controller.route('/<link_id>/categorize', methods=['GET'])
 def categorize_link(link_id):
     """
@@ -212,7 +211,22 @@ def categorize_link(link_id):
 
     :param link_id: ID of the link to be marked as unread
     """
-    raise NotImplementedError("Replay not yet implemented.")
+    # TODO: validate user ID
+    try:
+        link = Link.query.get(link_id)
+        if link:
+            process_link(link)
+            return APIResponseBuilder.success({
+                "link": link
+            })
+        else:
+            return APIResponseBuilder.failure({
+                "invalid_id": f"Unable to find link with ID of {link_id}"
+            })
+    except SQLAlchemyError as e:
+        return APIResponseBuilder.error(f"Issue running query: {e}")
+    except Exception as e:
+        return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
 @link_controller.route('/<link_id>/categorize', methods=['POST'])
