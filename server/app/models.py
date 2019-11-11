@@ -30,6 +30,13 @@ link_category = db.Table('link_category',
                          )
 
 
+class ThirdPartyIntegration(enum.IntEnum):
+    """ An enum to represent the third party integration being connected to """
+    TODOIST = 1
+    POCKET = 2
+    INSTAPAPER = 3
+
+
 class Category(Base):
     """
     Entity representing a category
@@ -40,6 +47,8 @@ class Category(Base):
     user_id = db.Column(db.String(36), db.ForeignKey('user.uuid'), nullable=False, )
     category_name = db.Column(db.String(50), nullable=False)
     is_archived = db.Column(db.Boolean, default=False)
+    forwarding_app = db.Column(db.Enum(ThirdPartyIntegration))
+    forwarding_url = db.Column(db.String(250))
     keywords = db.relationship('Keyword', backref='category', lazy='dynamic')
     links = db.relationship('Link',
                             secondary=link_category,
@@ -70,6 +79,8 @@ class Category(Base):
             'user_id': self.user_id,
             'category_name': self.category_name,
             'is_archived': self.is_archived,
+            'app_forwarding': self.app_forwarding,
+            'forwarding_url': self.forwarding_url,
             'created_at': self.created_at,
             'updated_at': self.updated_at,
             'keywords': keywords_list
@@ -107,6 +118,10 @@ class User(Base):
 
     uuid = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False)
+    todoist_api_key = db.Column(db.String(100))
+    todoist_default_forwarding_url = db.Column(db.String(100))
+    pocket_api_key = db.Column(db.String(50))
+    pocket_default_forwarding_url = db.Column(db.String(100))
     links = db.relationship('Link', backref='user', lazy='dynamic')
     categories = db.relationship('Category', backref='user', lazy='dynamic')
 
@@ -116,6 +131,10 @@ class User(Base):
             'id': self.id,
             'uuid': self.uuid,
             'email': self.email,
+            'todoist_api_key': self.todoist_api_key,
+            'todoist_default_forwarding_url': self.todoist_default_forwarding_url,
+            'pocket_api_key': self.pocket_api_key,
+            'pocket_default_forwarding_url': self.pocket_default_forwarding_url,
             'categories': [category.user_serialized for category in self.categories]
         }
 
@@ -179,3 +198,5 @@ class RelevantKeyword(Base):
             'relevance': self.relevance,
             'did_match': self.did_match
         }
+
+
