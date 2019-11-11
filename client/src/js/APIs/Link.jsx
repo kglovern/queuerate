@@ -68,3 +68,14 @@ export const markAsUnread = (id, uuid) =>
                 console.log(error);
             });
     }
+
+export const replayLink = (link_id, user_id) => 
+    dispatch => {
+        get(`/links/${link_id}/categorize`, link_id)
+            .then(response => {
+                dispatch(fetchLinks(user_id));
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }

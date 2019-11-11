@@ -9,13 +9,14 @@ import Paper from '@material-ui/core/Paper';
 import moment from 'moment';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { fetchLinks, createLink, markAsRead, markAsUnread } from '../APIs/Link';
+import { fetchLinks, createLink, markAsRead, markAsUnread, replayLink } from '../APIs/Link';
 import { get_uuid } from "../Utility/Firebase"
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SettingsIcon from '@material-ui/icons/Settings';
 import Checkbox from '@material-ui/core/Checkbox';
 import Star from '@material-ui/icons/Star';
 import StarBorder from '@material-ui/icons/StarBorder';
+import ReplayIcon from '@material-ui/icons/Replay';
 
 import './AllView.css';
 import {Link} from "react-router-dom";
@@ -70,8 +71,7 @@ class AllView extends Component {
 
     render() {
         const { link_name } = this.state
-        const { links, fetchLinks } = this.props
-
+        const { links, fetchLinks, replayLink } = this.props
         return ( 
             <div>
                 <div style={{ display: 'flex' }}>
@@ -139,6 +139,13 @@ class AllView extends Component {
                                                 />
                                             </TableCell>
                                             <TableCell>
+                                                <IconButton 
+                                                    aria-label="replay_link"
+                                                    onClick={() => replayLink(link.id, link.user_id)}>
+                                                    <ReplayIcon />
+                                                </IconButton>
+                                            </TableCell>
+                                            <TableCell>
                                                 <Link
                                                     to={`/link/${link.id}/manage`}>
                                                     <IconButton aria-label="manage_link">
@@ -161,7 +168,8 @@ const mapDispatchToProps = (dispatch) => ({
     createLink: (link_data) => dispatch(createLink(link_data)),
     fetchLinks: (uuid) => dispatch(fetchLinks(uuid)),
     markAsRead: (id,uuid) => dispatch(markAsRead(id, uuid)),
-    markAsUnread: (id, uuid) => dispatch(markAsUnread(id, uuid))
+    markAsUnread: (id, uuid) => dispatch(markAsUnread(id, uuid)),
+    replayLink: (link_id, user_id) => dispatch(replayLink(link_id, user_id)),
 })
 
 const mapStateToProps = state => ({
