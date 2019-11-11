@@ -3,7 +3,7 @@ from celery.utils.log import get_task_logger
 from celery.exceptions import CeleryError
 from bs4 import BeautifulSoup
 from app.models import Category, Link, ProcessingState, RelevantKeyword
-from app import db
+from app import db, app
 import requests
 import pke
 import re
@@ -13,7 +13,8 @@ logger = get_task_logger(__name__)
 
 
 # Setup celery connection
-celery = Celery('curations', broker='pyamqp://guest@localhost/')
+
+celery = Celery('curations', broker=app.config["CELERY_BROKER_URL"])
 #celery.conf.update(app.config)
 
 
