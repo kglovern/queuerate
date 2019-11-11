@@ -217,6 +217,7 @@ def categorize_link(link_id):
         if link:
             link.processing_state = ProcessingState.UNPROCESSED
             link.categories = []
+            db.session.add(link)
             db.session.commit()
             process_link(link)
             return APIResponseBuilder.success({
