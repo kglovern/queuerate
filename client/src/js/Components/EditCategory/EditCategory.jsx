@@ -5,7 +5,9 @@ import TextField from "@material-ui/core/TextField";
 import ChipInput from "material-ui-chip-input";
 import Button from "@material-ui/core/Button";
 import EditCategoryAPIService from "./EditCategoryAPIService";
-
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import {Link} from "react-router-dom";
+import {IconButton} from "@material-ui/core";
 
 const EditCategory = ({match, updateParentCategory, uuid}) => {
     const { categoryID } = match.params;
@@ -82,11 +84,24 @@ const EditCategory = ({match, updateParentCategory, uuid}) => {
         }
     }
 
+    const alignment = {
+        "display": "flex",
+        "alignItems": "center"
+    }
+    
     return (
             <FormControl >
-                <Typography variant="h5" noWrap>
-                    Edit Category - "{ category.category_name }"
-                </Typography>
+                <div style={alignment}>
+                    <Link
+                        to={`/category/${categoryID}`}>
+                        <IconButton aria-label="back_button">
+                            <ArrowBackIcon />
+                        </IconButton>
+                    </Link>
+                    <Typography variant="h5" noWrap>
+                        Edit Category - "{ category.category_name }"
+                    </Typography>
+                </div>
                 <TextField
                     required
                     label="Name"
