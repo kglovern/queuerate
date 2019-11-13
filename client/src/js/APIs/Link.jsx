@@ -79,3 +79,13 @@ export const replayLink = (link_id, user_id) =>
                 console.log(error)
             })
     }
+
+export const replayLinkWithoutDispatch = (link_id, user_id) => {
+        get(`/links/${link_id}/categorize`, link_id)
+            .then(response => {
+                
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }    

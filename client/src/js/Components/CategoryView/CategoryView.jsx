@@ -8,9 +8,11 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { replayLinkWithoutDispatch } from '../../APIs/Link';
 import { IconButton } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import moment from 'moment';
+import ReplayIcon from '@material-ui/icons/Replay';
 
 const CategoryView = ({match}) => {
     const { categoryID } = match.params;
@@ -30,6 +32,11 @@ const CategoryView = ({match}) => {
         }
         fetchCategoryAndLinks();
     }, [categoryID]);
+
+    const replayLink = async (id, user_id) => {
+        await replayLinkWithoutDispatch(id, user_id);
+    }
+
     return (
         <div>
             <h1>
@@ -53,7 +60,7 @@ const CategoryView = ({match}) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {
+                        { 
                             links.map( link => (
                                 <TableRow key={link.id}>
                                     <TableCell><a href={link.url} target="_blank">{link.link_title || link.url}</a></TableCell>
@@ -73,6 +80,13 @@ const CategoryView = ({match}) => {
                                                     read_state={link.is_marked_as_read}
                                         />
                                     </TableCell>
+                                    <TableCell>
+                                                <IconButton 
+                                                    aria-label="replay_link"
+                                                    onClick={() => replayLink(link.id, link.user_id)}>
+                                                    <ReplayIcon />
+                                                </IconButton>
+                                            </TableCell>
                                     <TableCell size="small">
                                         <Link
                                             to={`/link/${link.id}/manage`}>

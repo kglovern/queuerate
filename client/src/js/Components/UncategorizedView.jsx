@@ -8,9 +8,10 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import moment from 'moment';
 import MarkAsRead from './CategoryView/MarkAsRead';
-import { fetchUncategorizedLinks } from '../APIs/Link';
+import { fetchUncategorizedLinks, replayLink } from '../APIs/Link';
 import { get_uuid } from "../Utility/Firebase"
 import SettingsIcon from '@material-ui/icons/Settings';
+import ReplayIcon from '@material-ui/icons/Replay';
 
 import './AllView.css';
 import {Link} from "react-router-dom";
@@ -27,7 +28,7 @@ class UncategorizedView extends Component {
     }
 
     render() {
-        const { links } = this.props
+        const { links, replayLink } = this.props
         return (
             <div>
                 <h1>Uncategorized Links </h1>
@@ -70,6 +71,13 @@ class UncategorizedView extends Component {
                                                 />
                                             </TableCell>
                                             <TableCell>
+                                                <IconButton 
+                                                    aria-label="replay_link"
+                                                    onClick={() => replayLink(link.id, link.user_id)}>
+                                                    <ReplayIcon />
+                                                </IconButton>
+                                            </TableCell>
+                                            <TableCell>
                                                 <Link
                                                     to={`/link/${link.id}/manage`}>
                                                     <IconButton aria-label="manage_link">
@@ -90,6 +98,7 @@ class UncategorizedView extends Component {
 
 const mapDispatchToProps = (dispatch) => ({
     fetchUncategorizedLinks: (uuid) => dispatch(fetchUncategorizedLinks(uuid)),
+    replayLink: (link_id, user_id) => dispatch(replayLink(link_id, user_id)),
 })
 
 const mapStateToProps = state => ({
