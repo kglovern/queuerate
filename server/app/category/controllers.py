@@ -60,6 +60,29 @@ def get_category_by_id(category_id):
     except Exception as e:
         return APIResponseBuilder.error(f"Error encountered: {e}")
 
+@category_controller.route('/<category_id>', methods=['DELETE'])
+def delete_category_by_id(category_id):
+    """
+    Returns a JSON response of a single category with id of category_id
+    Includes all single keywords associated with that category
+
+    :param  category_id: ID of the specific category to be found
+    :return: JSON response
+    """
+    try:
+        category = Category.query.get(category_id)
+        if category:
+            db.session.delete(category)
+            db.session.commit()
+            return APIResponseBuilder.success({"category": "deleted successfully"})
+        else:
+            return APIResponseBuilder.failure({
+                "invalid_id": f"Unable to find category with id {category_id}"
+            })
+    except SQLAlchemyError as e:
+        return APIResponseBuilder.error(f"Issue running query: {e}")
+    except Exception as e:
+        return APIResponseBuilder.error(f"Error encountered: {e}")
 
 @category_controller.route('/', methods=['POST'])
 def create_new_category():

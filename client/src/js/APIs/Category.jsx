@@ -1,5 +1,5 @@
 import { store_categories } from '../../store/actions/category'
-import { get, post } from '../Utility/axios';
+import { get, post, axiosObj } from '../Utility/axios';
 import { createKeyword } from './Keyword'
 
 export function fetchCategories(uuid) {
@@ -44,3 +44,14 @@ export const createCategory = category =>
                     console.log(error);
                 });
     }
+
+
+export const deleteCategory = catagory_id => {
+    return axiosObj.delete(`/categories/${catagory_id}`)
+        .then(function (response) {
+            // console.log(response)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}

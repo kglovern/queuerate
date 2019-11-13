@@ -13,8 +13,10 @@ import { IconButton } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import moment from 'moment';
 import ReplayIcon from '@material-ui/icons/Replay';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { deleteCategory } from '../../APIs/Category';
 
-const CategoryView = ({match}) => {
+const CategoryView = ({match, updateParentCategory, history}) => {
     const { categoryID } = match.params;
     const [category, setCategory] = useState({});
     const [links, setLinks] = useState([]);
@@ -37,6 +39,14 @@ const CategoryView = ({match}) => {
         await replayLinkWithoutDispatch(id, user_id);
     }
 
+    const deleteCategoryHandler = async (category_id) => {
+        await deleteCategory(category_id)
+            .then(response => {
+                updateParentCategory();
+                history.push('/');
+            })
+    }
+
     return (
         <div>
             <h1>
@@ -47,6 +57,12 @@ const CategoryView = ({match}) => {
                         <SettingsIcon />
                     </IconButton>
                 </Link>
+                <IconButton 
+                    aria-label="delete_category"
+                    onClick={() => deleteCategoryHandler(categoryID)}
+                    >
+                    <DeleteIcon />
+                </IconButton>
             </h1>
             <Paper>
                 <Table>
