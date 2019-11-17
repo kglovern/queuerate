@@ -149,6 +149,7 @@ class ForwardingSettings(Base):
     @property
     def serialized(self):
         return {
+            'id': self.id,
             'user_id': self.user_id,
             'forwarding_app': self.forwarding_app,
             'api_key': self.api_key,

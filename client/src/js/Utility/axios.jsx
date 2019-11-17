@@ -2,7 +2,7 @@ import axios from 'axios'
 
 /* Default API */
 export const axiosObj =  axios.create({
-  baseURL: 'http://api.curator.codifyr.ca',
+  baseURL: 'http://localhost:8080',//'http://api.curator.codifyr.ca',
   headers: {
     'Authorization': 'token here'
   },
