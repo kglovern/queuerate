@@ -64,7 +64,7 @@ const ManageLink = ({match}) => {
                                 {relevantKeywords.map(row => (
                                     <TableRow key={row.id}>
                                         <TableCell align="left"><i>{row.keyword}</i></TableCell>
-                                        <TableCell align="left">{row.relevance}</TableCell>
+                                        <TableCell align="left">{row.relevance.toFixed(4)}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>

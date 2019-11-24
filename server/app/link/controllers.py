@@ -241,7 +241,6 @@ def categorize_link(link_id):
 def recategorize_link(link_id):
     try:
         data = request.json
-        print(data)
         link = Link.query.get(link_id)
         if link:
             link.categories = []  # Remove all current relations
