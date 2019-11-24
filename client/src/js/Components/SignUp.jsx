@@ -1,6 +1,5 @@
 import React from 'react';
 import { signup } from "../Utility/Firebase";
-import { useHistory } from "react-router-dom";
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Avatar from '@material-ui/core/Avatar';

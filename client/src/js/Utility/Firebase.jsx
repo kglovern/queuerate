@@ -55,3 +55,15 @@ export const logout = () => {
             console.log(error);
         });
 };
+
+export const doPasswordReset = email => {
+     firebase
+         .auth()
+         .sendPasswordResetEmail(email)
+         .then(() => {
+            window.location.href = ('/');
+        })
+         .catch(error => {
+            console.log(error);
+         });
+}
