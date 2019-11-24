@@ -100,7 +100,9 @@ def categorize_entity(message):
 
     link = Link.query.get(message["link_id"])
 
-    # Insert all relevant keywords for a link -false as default, we can make them true later
+    # Insert all relevant keywords for a link - false as default, we can make them true later
+    link.relevant_keywords = []  # Reset keywords so they aren't duplicated when re-run
+    db.session.commit()
     for keyword in key_dict.keys():
         rk = RelevantKeyword(keyword=keyword,
                              link_id=link.id,
