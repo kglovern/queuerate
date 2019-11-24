@@ -96,7 +96,7 @@ def categorize_entity(message):
     punctuation_table = str.maketrans(dict.fromkeys(string.punctuation))
     key_dict = map_keywords_to_dict(message["keywords"])
     print(key_dict)
-    user_categories = Category.query.filter_by(user_id=message["uuid"]).all()
+    user_categories = Category.query.filter_by(user_id=message["uuid"]).filter_by(is_archived=False).all()
 
     link = Link.query.get(message["link_id"])
 
