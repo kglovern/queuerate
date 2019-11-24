@@ -10,6 +10,7 @@ import moment from 'moment';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { fetchLinks, createLink, markAsRead, markAsUnread, replayLink } from '../APIs/Link';
+import { fetchCategories } from '../APIs/Category';
 import { get_uuid } from "../Utility/Firebase"
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -56,8 +57,9 @@ class AllView extends Component {
     }
 
     componentDidMount() {
-        const { fetchLinks } = this.props;
+        const { fetchLinks, fetchCategories } = this.props;
         fetchLinks(get_uuid());
+        fetchCategories(get_uuid())
     }
 
     toggleReadState(id, read_state) {
@@ -170,6 +172,7 @@ const mapDispatchToProps = (dispatch) => ({
     markAsRead: (id,uuid) => dispatch(markAsRead(id, uuid)),
     markAsUnread: (id, uuid) => dispatch(markAsUnread(id, uuid)),
     replayLink: (link_id, user_id) => dispatch(replayLink(link_id, user_id)),
+    fetchCategories: (uuid) => dispatch(fetchCategories(uuid))
 })
 
 const mapStateToProps = state => ({

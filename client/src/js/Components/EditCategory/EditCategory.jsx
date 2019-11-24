@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import FormControl from "@material-ui/core/FormControl";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
@@ -6,10 +6,12 @@ import ChipInput from "material-ui-chip-input";
 import Button from "@material-ui/core/Button";
 import EditCategoryAPIService from "./EditCategoryAPIService";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import {Link} from "react-router-dom";
-import {IconButton} from "@material-ui/core";
+import { Link } from "react-router-dom";
+import { withRouter } from 'react-router-dom'
+import { IconButton } from "@material-ui/core";
+import { deleteCategory, archiveCategory } from '../../APIs/Category';
 
-const EditCategory = ({match, updateParentCategory, uuid}) => {
+const EditCategory = ({ match, updateParentCategory, uuid, history }) => {
     const { categoryID } = match.params;
     // Local state
     const [category, setCategory] = useState({});
@@ -25,11 +27,11 @@ const EditCategory = ({match, updateParentCategory, uuid}) => {
             setKeywordObj(obj.keywords);
             // Filter keywords into two categories based on exclusion status
             const excludedArr = obj.keywords
-                    .filter (k => k.is_excluded === true)
-                    .map(k => k.keyword);
+                .filter(k => k.is_excluded === true)
+                .map(k => k.keyword);
             const includedArr = obj.keywords
-                    .filter (k => k.is_excluded === false)
-                    .map(k => k.keyword);
+                .filter(k => k.is_excluded === false)
+                .map(k => k.keyword);
             setExcludedKeywords(excludedArr);
             setKeywords(includedArr);
             setCategoryName(category.name);
@@ -38,7 +40,7 @@ const EditCategory = ({match, updateParentCategory, uuid}) => {
 
     }, [categoryID]);
 
-    const handleDeleteKeyword = async (chip, index, is_excluded=false) => {
+    const handleDeleteKeyword = async (chip, index, is_excluded = false) => {
         // Filter local state array
         if (is_excluded) {
             const arr = excludedKeywords.filter(k => k != chip)
@@ -54,7 +56,7 @@ const EditCategory = ({match, updateParentCategory, uuid}) => {
         setKeywordObj(arr);
     }
 
-    const handleAddKeyword = async (chip, is_excluded=false) => {
+    const handleAddKeyword = async (chip, is_excluded = false) => {
         if (is_excluded) {
             const arr = [...excludedKeywords, chip];
             setExcludedKeywords(arr);
@@ -67,7 +69,7 @@ const EditCategory = ({match, updateParentCategory, uuid}) => {
         setKeywordObj(arr);
     }
 
-    const handleNameChange =  (e) => {
+    const handleNameChange = (e) => {
         const { value } = e.target;
         setCategoryName(value);
     }
@@ -84,12 +86,27 @@ const EditCategory = ({match, updateParentCategory, uuid}) => {
         }
     }
 
+    const deleteCategoryHandler = async () => {
+        await deleteCategory(categoryID)
+            .then(response => {
+                history.push('/');
+            }) 
+    }
+
+    const achivedCategoryHandler = async () => {
+        await archiveCategory(categoryID)
+            .then(response => {
+                history.push('/');
+            }) 
+    }
+ 
     const alignment = {
         "display": "flex",
         "alignItems": "center"
     }
-    
+
     return (
+        <div>
             <FormControl >
                 <div style={alignment}>
                     <Link
@@ -99,7 +116,7 @@ const EditCategory = ({match, updateParentCategory, uuid}) => {
                         </IconButton>
                     </Link>
                     <Typography variant="h5" noWrap>
-                        Edit Category - "{ category.category_name }"
+                        Edit Category - "{category.category_name}"
                     </Typography>
                 </div>
                 <TextField
@@ -134,7 +151,21 @@ const EditCategory = ({match, updateParentCategory, uuid}) => {
                 />
                 <br />
             </FormControl>
+            <div>
+                <Button
+                    variant="contained"
+                    onClick={achivedCategoryHandler}
+                    >
+                    Archive
+                </Button>
+                <Button
+                    variant="contained"
+                    onClick={deleteCategoryHandler}>
+                    Delete
+                </Button>
+            </div>
+        </div>
     );
 };
 
-export default EditCategory;
+export default withRouter(EditCategory);
