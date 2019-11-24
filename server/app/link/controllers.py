@@ -43,12 +43,16 @@ def create_link():
     # TODO: validate user ID
     try:
         data = request.json
-        link = Link(
-            user_id=data['user_id'],
-            url=data['url'],
-        )
-        db.session.add(link)
-        db.session.commit()
+        # See if this specific user has a link entity with this specific url
+        # This should prevent a link from being added twice but also run it through regardless
+        link = Link.query.filter_by(user_id=data['user_id'], url=data['url']).first()
+        if not link:
+            link = Link(
+                user_id=data['user_id'],
+                url=data['url'],
+            )
+            db.session.add(link)
+            db.session.commit()
         process_link(link)
         return APIResponseBuilder.success({
             "link": link
