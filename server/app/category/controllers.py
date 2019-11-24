@@ -125,8 +125,11 @@ def update_category_by_id(category_id):
         data = request.json
         category = Category.query.get(category_id)
         if category:
-            category.category_name = data['category_name']
-            # category.is_archived = data['is_archived'] or False TODO: find way to convert JSON true -> python Bool
+            if 'category_name' in data:
+                category.category_name = data['category_name']
+
+            if 'is_archived' in data:
+                category.is_archived = data['is_archived']
             db.session.commit()
             return APIResponseBuilder.success({
                 "category": category
