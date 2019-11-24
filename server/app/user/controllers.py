@@ -1,8 +1,9 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from app.models import User, Link, Category
 from app.services.APIResponseBuilder import APIResponseBuilder
 from sqlalchemy.exc import SQLAlchemyError
 from app import db
+from app.DataPortability import DataPortabilityService
 
 user_controller = Blueprint("user_controller", __name__)
 
@@ -93,3 +94,22 @@ def get_all_links_by_user(user_id):
         return APIResponseBuilder.error(f"Issue running query: {e}")
     except Exception as e:
         return APIResponseBuilder.error(f"Error encountered: {e}")
+
+
+@user_controller.route('/<user_id>/export', methods=["GET"])
+def export_data_by_user_id(user_id):
+    try:
+        export_data = jsonify(DataPortabilityService.export_user_data(user_id))
+        export_data.headers['Content-Disposition'] = f"attachment;filename={user_id}_export.json"
+        return export_data
+    except SQLAlchemyError as e:
+        return APIResponseBuilder.error(f"Issue running query: {e}")
+    except Exception as e:
+        return APIResponseBuilder.error(f"Error encountered: {e}")
+
+
+@user_controller.route('/import', methods=['POST'])
+def import_data_for_user():
+    data = request.files
+    print(data)
+    return ""

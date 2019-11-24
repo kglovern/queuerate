@@ -1,5 +1,6 @@
 from app import db
 import enum
+from datetime import datetime
 
 
 class Base(db.Model):
@@ -57,6 +58,13 @@ class Category(Base):
         }
 
     @property
+    def export_serialized(self):
+        return {
+            'name': self.category_name,
+            'keywords': [keyword.export_serialized for keyword in self.keywords]
+        }
+
+    @property
     def serialized(self):
         keywords_list = []
         for row in self.keywords:
@@ -88,6 +96,13 @@ class Keyword(Base):
     is_excluded = db.Column(db.Boolean, default=False)
 
     @property
+    def export_serialized(self):
+        return {
+            'keyword': self.keyword,
+            'is_excluded': self.is_excluded
+        }
+
+    @property
     def serialized(self):
         return {
             'id': self.id,
@@ -109,6 +124,14 @@ class User(Base):
     email = db.Column(db.String, nullable=False)
     links = db.relationship('Link', backref='user', lazy='dynamic')
     categories = db.relationship('Category', backref='user', lazy='dynamic')
+
+    @property
+    def export_serialization(self):
+        return {
+            'export_from': self.uuid,
+            'export_time': datetime.now(),
+            'categories': [category.export_serialized for category in self.categories]
+        }
 
     @property
     def serialized(self):
