@@ -20,12 +20,16 @@ import AllView from '../Components/AllView';
 import EditCategory from '../Components/EditCategory/EditCategory';
 import Divider from '@material-ui/core/Divider';
 import UncategorizedView from '../Components/UncategorizedView';
+import SettingsView from '../Components/UserSettings/UserSettings';
 import { get_uuid } from "../Utility/Firebase"
 import ArchivedCategoryView from '../Components/ArchivedCategoryView'
+import { IconButton } from '@material-ui/core';
+import SettingsIcon from '@material-ui/icons/Settings';
+
 import './Navbar.css';
 import ManageLink from "../Components/ManageLink/ManageLink";
 
-class Navbar extends Component {  
+class Navbar extends Component {
   constructor(props) {
     super(props);
   }
@@ -48,6 +52,15 @@ class Navbar extends Component {
         <CssBaseline />
         <AppBar position="fixed" className={classes.appBar}>
           <Toolbar>
+            {/* <Typography variant="h6" noWrap>
+            Clipped drawer
+          </Typography> */}
+            <Link
+              to={`/user_settings`}>
+              <IconButton aria-label="user_settings">
+                <SettingsIcon />
+              </IconButton>
+            </Link>
             <Button
               type="submit"
               variant="contained"
@@ -112,12 +125,12 @@ class Navbar extends Component {
             <Route
               exact
               path="/category/:categoryID/edit"
-              render={(props) => <EditCategory {...props}  uuid={get_uuid()} updateParentCategory={(uuid) => this.props.fetchCategories(uuid)} />}
+              render={(props) => <EditCategory {...props} uuid={get_uuid()} updateParentCategory={(uuid) => this.props.fetchCategories(uuid)} />}
             />
             <Route
-                exact
-                path="/link/:linkID/manage"
-                component={ManageLink} />
+              exact
+              path="/link/:linkID/manage"
+              component={ManageLink} />
             <Route
               exact
               path="/addCategory"
@@ -130,6 +143,11 @@ class Navbar extends Component {
               exact
               path="/archivedCategories"
               component={ArchivedCategoryView} />
+            <Route
+              exact
+              path="/user_settings">
+              <SettingsView />
+            </Route>
             <Route
               exact
               path="/"

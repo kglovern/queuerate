@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from app.models import Category, Link
+from app.models import Category, Link, ThirdPartyIntegration
 from app.services.APIResponseBuilder import APIResponseBuilder
 from sqlalchemy.exc import SQLAlchemyError
 from app import db
@@ -130,6 +130,45 @@ def update_category_by_id(category_id):
 
             if 'is_archived' in data:
                 category.is_archived = data['is_archived']
+            db.session.commit()
+            return APIResponseBuilder.success({
+                "category": category
+            })
+        else:
+            return APIResponseBuilder.failure({
+                "invalid_id": f"Unable to find category with ID of {category_id}"
+            })
+    except SQLAlchemyError as e:
+        return APIResponseBuilder.error(f"Issue running query: {e}")
+    except Exception as e:
+        return APIResponseBuilder.error(f"Error encountered: {e}")
+
+
+@category_controller.route('/<category_id>/forwarding/', methods=['PATCH'])
+def update_category_forwarding(category_id):
+    """
+    Update the forwarding settings for a category represented by category_id.
+    Attributes that can change:
+    forwarding_app: The third party integration
+    forwarding_url: The url used to forward links to
+
+    :param category_id: ID of the category to be updated
+    :return: JSON response with the updated category entity
+    """
+    try:
+        data = request.json
+        valid_apps = set(item.value for item in ThirdPartyIntegration)
+        forwarding_app = data['forwarding_app']
+        if forwarding_app not in valid_apps:
+            return APIResponseBuilder.failure({
+                "invalid_id": f"Not a valid forwarding app for value of {forwarding_app}"
+            })
+
+        category = Category.query.get(category_id)
+        if category:
+            
+            category.forwarding_app = forwarding_app
+            category.forwarding_url = data['forwarding_url']
             db.session.commit()
             return APIResponseBuilder.success({
                 "category": category
