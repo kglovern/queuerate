@@ -7,17 +7,22 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import moment from 'moment';
-import MarkAsRead from './CategoryView/MarkAsRead';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { fetchLinks, createLink } from '../APIs/Link';
+import { fetchLinks, createLink, markAsRead, markAsUnread, replayLink } from '../APIs/Link';
+import { fetchCategories } from '../APIs/Category';
 import { get_uuid } from "../Utility/Firebase"
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SettingsIcon from '@material-ui/icons/Settings';
+import Checkbox from '@material-ui/core/Checkbox';
+import Star from '@material-ui/icons/Star';
+import StarBorder from '@material-ui/icons/StarBorder';
+import ReplayIcon from '@material-ui/icons/Replay';
 
 import './AllView.css';
 import {Link} from "react-router-dom";
 import {IconButton} from "@material-ui/core";
+import ProcessingState from "./ProcessingState";
 
 class AllView extends Component {
     constructor(props) {
@@ -27,6 +32,7 @@ class AllView extends Component {
         }
         this.onChange = this.onChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.toggleReadState = this.toggleReadState.bind(this);
     }
 
     handleSubmit() {
@@ -52,13 +58,23 @@ class AllView extends Component {
     }
 
     componentDidMount() {
-        const { fetchLinks } = this.props;
+        const { fetchLinks, fetchCategories } = this.props;
         fetchLinks(get_uuid());
+        fetchCategories(get_uuid())
+    }
+
+    toggleReadState(id, read_state) {
+        const { markAsRead, markAsUnread } = this.props;
+        if(read_state) {
+            markAsRead(id, get_uuid());
+        } else {
+            markAsUnread(id, get_uuid());
+        }
     }
 
     render() {
         const { link_name } = this.state
-        const { links, fetchLinks } = this.props
+        const { links, fetchLinks, replayLink } = this.props
         return (
             <div>
                 <div style={{ display: 'flex' }}>
@@ -89,10 +105,12 @@ class AllView extends Component {
                     <Table>
                         <TableHead>
                             <TableRow>
+                                <TableCell />
                                 <TableCell>Link</TableCell>
                                 <TableCell>Last Categorized</TableCell>
                                 <TableCell>Categories</TableCell>
                                 <TableCell>Mark as Read</TableCell>
+                                <TableCell />
                                 <TableCell />
                             </TableRow>
                         </TableHead>
@@ -101,6 +119,7 @@ class AllView extends Component {
                                 links.map(link => {
                                     return (
                                         <TableRow key={link.id}>
+                                            <TableCell><ProcessingState processing_state={link.processing_state}/> </TableCell>
                                             <TableCell><a href={link.url} target="_blank">{link.link_title || link.url}</a></TableCell>
                                             <TableCell>{moment(link.updated_at).format("h:mm A - MMM Do")}</TableCell>
                                             <TableCell>
@@ -119,9 +138,18 @@ class AllView extends Component {
                                                 }
                                             </TableCell>
                                             <TableCell size="small">
-                                                <MarkAsRead linkId={link.id}
-                                                    read_state={link.is_marked_as_read}
+                                                 <Checkbox icon={<StarBorder />}
+                                                    checkedIcon={<Star />}
+                                                    checked={link.is_marked_as_read}
+                                                    onClick={() => this.toggleReadState(link.id, !link.is_marked_as_read)}
                                                 />
+                                            </TableCell>
+                                            <TableCell>
+                                                <IconButton
+                                                    aria-label="replay_link"
+                                                    onClick={() => replayLink(link.id, link.user_id)}>
+                                                    <ReplayIcon />
+                                                </IconButton>
                                             </TableCell>
                                             <TableCell>
                                                 <Link
@@ -145,6 +173,10 @@ class AllView extends Component {
 const mapDispatchToProps = (dispatch) => ({
     createLink: (link_data) => dispatch(createLink(link_data)),
     fetchLinks: (uuid) => dispatch(fetchLinks(uuid)),
+    markAsRead: (id,uuid) => dispatch(markAsRead(id, uuid)),
+    markAsUnread: (id, uuid) => dispatch(markAsUnread(id, uuid)),
+    replayLink: (link_id, user_id) => dispatch(replayLink(link_id, user_id)),
+    fetchCategories: (uuid) => dispatch(fetchCategories(uuid))
 })
 
 const mapStateToProps = state => ({

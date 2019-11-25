@@ -60,6 +60,29 @@ def get_category_by_id(category_id):
     except Exception as e:
         return APIResponseBuilder.error(f"Error encountered: {e}")
 
+@category_controller.route('/<category_id>', methods=['DELETE'])
+def delete_category_by_id(category_id):
+    """
+    Returns a JSON response of a single category with id of category_id
+    Includes all single keywords associated with that category
+
+    :param  category_id: ID of the specific category to be found
+    :return: JSON response
+    """
+    try:
+        category = Category.query.get(category_id)
+        if category:
+            db.session.delete(category)
+            db.session.commit()
+            return APIResponseBuilder.success({"category": "deleted successfully"})
+        else:
+            return APIResponseBuilder.failure({
+                "invalid_id": f"Unable to find category with id {category_id}"
+            })
+    except SQLAlchemyError as e:
+        return APIResponseBuilder.error(f"Issue running query: {e}")
+    except Exception as e:
+        return APIResponseBuilder.error(f"Error encountered: {e}")
 
 @category_controller.route('/', methods=['POST'])
 def create_new_category():
@@ -102,8 +125,11 @@ def update_category_by_id(category_id):
         data = request.json
         category = Category.query.get(category_id)
         if category:
-            category.category_name = data['category_name']
-            # category.is_archived = data['is_archived'] or False TODO: find way to convert JSON true -> python Bool
+            if 'category_name' in data:
+                category.category_name = data['category_name']
+
+            if 'is_archived' in data:
+                category.is_archived = data['is_archived']
             db.session.commit()
             return APIResponseBuilder.success({
                 "category": category

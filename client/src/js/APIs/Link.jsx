@@ -1,4 +1,4 @@
-import { post, get } from '../Utility/axios';
+import { post, get, patch } from '../Utility/axios';
 import { store_category_links } from '../../store/actions/link';
 
 export const createLink = link =>
@@ -45,3 +45,47 @@ export const fetchUncategorizedLinks = uuid =>
                 console.log(error);
             });
     }
+
+export const markAsRead = (id, uuid) => 
+    dispatch => {
+        patch(`/links/${id}/mark_as_read`)
+            .then(function (response) {
+                dispatch(fetchLinks(uuid));
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+
+export const markAsUnread = (id, uuid) => 
+    dispatch => {
+        patch(`/links/${id}/mark_as_unread`)
+            .then(function (response) {
+                dispatch(fetchLinks(uuid));
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+export const replayLink = (link_id, user_id) => 
+    dispatch => {
+        get(`/links/${link_id}/categorize`, link_id)
+            .then(response => {
+                dispatch(fetchLinks(user_id));
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+export const replayLinkWithoutDispatch = (link_id, user_id) => {
+        get(`/links/${link_id}/categorize`, link_id)
+            .then(response => {
+                
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }    

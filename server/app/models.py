@@ -41,7 +41,7 @@ class Category(Base):
     user_id = db.Column(db.String(36), db.ForeignKey('user.uuid'), nullable=False, )
     category_name = db.Column(db.String(50), nullable=False)
     is_archived = db.Column(db.Boolean, default=False)
-    keywords = db.relationship('Keyword', backref='category', lazy='dynamic')
+    keywords = db.relationship('Keyword', backref='category', lazy='dynamic', cascade="delete")
     links = db.relationship('Link',
                             secondary=link_category,
                             lazy='subquery',

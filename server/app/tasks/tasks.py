@@ -96,11 +96,15 @@ def categorize_entity(message):
     punctuation_table = str.maketrans(dict.fromkeys(string.punctuation))
     key_dict = map_keywords_to_dict(message["keywords"])
     print(key_dict)
-    user_categories = Category.query.filter_by(user_id=message["uuid"]).all()
+    user_categories = Category.query.filter_by(user_id=message["uuid"], is_archived=False).all()
 
     link = Link.query.get(message["link_id"])
 
-    # Insert all relevant keywords for a link -false as default, we can make them true later
+    # Insert all relevant keywords for a link - false as default, we can make them true later
+    # Reset keywords so they aren't duplicated when re-run
+    for rk in link.relevant_keywords:
+        db.session.delete(rk)
+    db.session.commit()
     for keyword in key_dict.keys():
         rk = RelevantKeyword(keyword=keyword,
                              link_id=link.id,

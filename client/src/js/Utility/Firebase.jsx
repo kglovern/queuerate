@@ -1,5 +1,6 @@
 import firebase from "../../../config/firebase";
 import { createUser } from "../APIs/Users";
+import {toast} from "react-toastify";
 
 export const get_uuid = () => window.localStorage.getItem("uuid");
 
@@ -7,18 +8,18 @@ const set_uuid = uuid => window.localStorage.setItem("uuid", uuid);
 
 const remove_uuid = () => window.localStorage.removeItem("uuid")
 
-export const login = user => {
+export const login = async user => {
     const { email, password } = user;
-    firebase
-        .auth()
-        .signInWithEmailAndPassword(email, password)
-        .then(result => {
-            set_uuid(result.user.uid);
-            window.location.reload();
-        })
-        .catch(error => {
-            console.log(error);
-        });
+    try {
+        const result = await firebase
+            .auth()
+            .signInWithEmailAndPassword(email, password);
+        set_uuid(result.user.uid);
+        return result;
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
 };
 
 export const signup = user_creds => {
@@ -40,6 +41,10 @@ export const signup = user_creds => {
         })
         .catch(error => {
             console.log(error);
+
+            toast.error("Unable to register - make sure you enter a valid email address", {
+                position: "top-center"
+            });
         });
 };
 
@@ -55,3 +60,15 @@ export const logout = () => {
             console.log(error);
         });
 };
+
+export const doPasswordReset = email => {
+     firebase
+         .auth()
+         .sendPasswordResetEmail(email)
+         .then(() => {
+            window.location.href = ('/');
+        })
+         .catch(error => {
+            console.log(error);
+         });
+}

@@ -6,14 +6,14 @@ module.exports = {
   entry: "./src/js/index.js",
   output: {
     // path: __dirname + '/dist',
-    // publicPath: '/',
+    publicPath: "/",
     filename: "./bundle.js"
   },
   plugins: [
     new HtmlWebpackPlugin({
       hash: false,
-      title: 'Curation Page',
-      template: 'index.html',
+      title: "Curation Page",
+      template: "index.html",
       filename: "testindex.html" //relative to root of the application
     }),
     new webpack.DefinePlugin({
@@ -49,7 +49,6 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        exclude: /node_modules/,
         use: ["style-loader", "css-loader"]
       },
       {

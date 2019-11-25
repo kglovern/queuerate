@@ -9,6 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Switch from '@material-ui/core/Switch';
 import Button from '@material-ui/core/Button';
 import ManageLinkAPIService from "./ManageLinkAPIService";
+import {toast} from "react-toastify";
 
 const ManageLink = ({match}) => {
     const {linkID} = match.params;
@@ -45,6 +46,7 @@ const ManageLink = ({match}) => {
 
     const handleCategorySave = async () => {
         await ManageLinkAPIService.updateLinkCategories(link.id, categories);
+        toast.info("Updated link categories");
     }
 
     return (
@@ -64,7 +66,7 @@ const ManageLink = ({match}) => {
                                 {relevantKeywords.map(row => (
                                     <TableRow key={row.id}>
                                         <TableCell align="left"><i>{row.keyword}</i></TableCell>
-                                        <TableCell align="left">{row.relevance}</TableCell>
+                                        <TableCell align="left">{row.relevance.toFixed(4)}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>

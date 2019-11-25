@@ -43,12 +43,16 @@ def create_link():
     # TODO: validate user ID
     try:
         data = request.json
-        link = Link(
-            user_id=data['user_id'],
-            url=data['url'],
-        )
-        db.session.add(link)
-        db.session.commit()
+        # See if this specific user has a link entity with this specific url
+        # This should prevent a link from being added twice but also run it through regardless
+        link = Link.query.filter_by(user_id=data['user_id'], url=data['url']).first()
+        if not link:
+            link = Link(
+                user_id=data['user_id'],
+                url=data['url'],
+            )
+            db.session.add(link)
+            db.session.commit()
         process_link(link)
         return APIResponseBuilder.success({
             "link": link
@@ -204,7 +208,6 @@ def mark_link_as_unread(link_id):
         return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
-# TODO - Will be replay link endpoint
 @link_controller.route('/<link_id>/categorize', methods=['GET'])
 def categorize_link(link_id):
     """
@@ -212,14 +215,32 @@ def categorize_link(link_id):
 
     :param link_id: ID of the link to be marked as unread
     """
-    raise NotImplementedError("Replay not yet implemented.")
+    # TODO: validate user ID
+    try:
+        link = Link.query.get(link_id)
+        if link:
+            link.processing_state = ProcessingState.UNPROCESSED
+            link.categories = []
+            db.session.add(link)
+            db.session.commit()
+            process_link(link)
+            return APIResponseBuilder.success({
+                "link": link
+            })
+        else:
+            return APIResponseBuilder.failure({
+                "invalid_id": f"Unable to find link with ID of {link_id}"
+            })
+    except SQLAlchemyError as e:
+        return APIResponseBuilder.error(f"Issue running query: {e}")
+    except Exception as e:
+        return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
 @link_controller.route('/<link_id>/categorize', methods=['POST'])
 def recategorize_link(link_id):
     try:
         data = request.json
-        print(data)
         link = Link.query.get(link_id)
         if link:
             link.categories = []  # Remove all current relations

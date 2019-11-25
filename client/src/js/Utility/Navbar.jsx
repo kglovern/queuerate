@@ -21,11 +21,11 @@ import EditCategory from '../Components/EditCategory/EditCategory';
 import Divider from '@material-ui/core/Divider';
 import UncategorizedView from '../Components/UncategorizedView';
 import { get_uuid } from "../Utility/Firebase"
-
+import ArchivedCategoryView from '../Components/ArchivedCategoryView'
 import './Navbar.css';
 import ManageLink from "../Components/ManageLink/ManageLink";
 
-class Navbar extends Component {
+class Navbar extends Component {  
   constructor(props) {
     super(props);
   }
@@ -48,9 +48,6 @@ class Navbar extends Component {
         <CssBaseline />
         <AppBar position="fixed" className={classes.appBar}>
           <Toolbar>
-            {/* <Typography variant="h6" noWrap>
-            Clipped drawer
-          </Typography> */}
             <Button
               type="submit"
               variant="contained"
@@ -72,7 +69,6 @@ class Navbar extends Component {
           <div className={classes.toolbar} />
           <List>
             <ListItem button
-              // key={index}
               onClick={() => history.push('/')}>
               <ListItemText primary={'All'} />
             </ListItem>
@@ -85,9 +81,12 @@ class Navbar extends Component {
             ))}
             <Divider />
             <ListItem button
-              // key={index}
               onClick={() => history.push('/uncategorized')}>
-              <ListItemText primary={'Uncategorized'} />
+              <ListItemText primary={'Uncategorized Links'} />
+            </ListItem>
+            <ListItem button
+              onClick={() => history.push('/archivedCategories')}>
+              <ListItemText primary={'Archived Categories'} />
             </ListItem>
           </List>
           <ListItem className="add-button-box" >
@@ -108,7 +107,7 @@ class Navbar extends Component {
             <Route
               exact
               path="/category/:categoryID"
-              component={CategoryView}
+              render={(props) => <CategoryView {...props} />}
             />
             <Route
               exact
@@ -127,6 +126,10 @@ class Navbar extends Component {
               exact
               path="/uncategorized"
               component={UncategorizedView} />
+              <Route
+              exact
+              path="/archivedCategories"
+              component={ArchivedCategoryView} />
             <Route
               exact
               path="/"
@@ -139,7 +142,7 @@ class Navbar extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  categories: state.category ? state.category.categories : []
+  categories: state.category ? state.category.categories.filter(el => !el.is_archived) : []
 })
 
 const mapDispatchToProps = (dispatch) => ({
