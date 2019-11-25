@@ -1,5 +1,6 @@
 import React from 'react';
 import '../../css/App.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { connect } from 'react-redux';
 
@@ -11,13 +12,15 @@ import ForgotPassword from './ForgotPassword';
 import { get_uuid } from "../Utility/Firebase"
 
 import { PrivateRoute, LoginRoute, SignUpRoute, ForgotPasswordRoute } from '../Utility/Routes';
+import { toast } from "react-toastify";
 
 class App extends React.Component {
 
-  constructor(props) { 
+  constructor(props) {
     super(props)
+    toast.configure()
   }
- 
+
   render() {
     const isAuth = get_uuid() ? true : false
     return (

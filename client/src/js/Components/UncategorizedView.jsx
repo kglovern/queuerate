@@ -16,6 +16,7 @@ import ReplayIcon from '@material-ui/icons/Replay';
 import './AllView.css';
 import {Link} from "react-router-dom";
 import {IconButton} from "@material-ui/core";
+import ProcessingState from "./ProcessingState";
 
 class UncategorizedView extends Component {
     constructor(props) {
@@ -36,10 +37,12 @@ class UncategorizedView extends Component {
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell> Link</TableCell>
+                                <TableCell />
+                                <TableCell>Link</TableCell>
                                 <TableCell>Created</TableCell>
                                 {/* <TableCell>Categories</TableCell> */}
                                 <TableCell>Mark as Read</TableCell>
+                                <TableCell />
                                 <TableCell />
                             </TableRow>
                         </TableHead>
@@ -48,6 +51,7 @@ class UncategorizedView extends Component {
                                 links.map(link => {
                                     return (
                                         <TableRow key={link.id}>
+                                            <TableCell><ProcessingState processing_state={link.processing_state}/> </TableCell>
                                             <TableCell><a href={link.url} target="_blank">{link.link_title || link.url}</a></TableCell>
                                             <TableCell>{moment(link.updated_at).format("h:mm A - MMM Do")}</TableCell>
                                             {/* <TableCell>
@@ -71,7 +75,7 @@ class UncategorizedView extends Component {
                                                 />
                                             </TableCell>
                                             <TableCell>
-                                                <IconButton 
+                                                <IconButton
                                                     aria-label="replay_link"
                                                     onClick={() => replayLink(link.id, link.user_id)}>
                                                     <ReplayIcon />

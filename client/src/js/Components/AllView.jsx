@@ -22,6 +22,7 @@ import ReplayIcon from '@material-ui/icons/Replay';
 import './AllView.css';
 import {Link} from "react-router-dom";
 import {IconButton} from "@material-ui/core";
+import ProcessingState from "./ProcessingState";
 
 class AllView extends Component {
     constructor(props) {
@@ -74,7 +75,7 @@ class AllView extends Component {
     render() {
         const { link_name } = this.state
         const { links, fetchLinks, replayLink } = this.props
-        return ( 
+        return (
             <div>
                 <div style={{ display: 'flex' }}>
                     <TextField
@@ -104,10 +105,12 @@ class AllView extends Component {
                     <Table>
                         <TableHead>
                             <TableRow>
+                                <TableCell />
                                 <TableCell>Link</TableCell>
                                 <TableCell>Last Categorized</TableCell>
                                 <TableCell>Categories</TableCell>
                                 <TableCell>Mark as Read</TableCell>
+                                <TableCell />
                                 <TableCell />
                             </TableRow>
                         </TableHead>
@@ -116,6 +119,7 @@ class AllView extends Component {
                                 links.map(link => {
                                     return (
                                         <TableRow key={link.id}>
+                                            <TableCell><ProcessingState processing_state={link.processing_state}/> </TableCell>
                                             <TableCell><a href={link.url} target="_blank">{link.link_title || link.url}</a></TableCell>
                                             <TableCell>{moment(link.updated_at).format("h:mm A - MMM Do")}</TableCell>
                                             <TableCell>
@@ -133,7 +137,7 @@ class AllView extends Component {
                                                         "Uncategorized"
                                                 }
                                             </TableCell>
-                                            <TableCell size="small">                                               
+                                            <TableCell size="small">
                                                  <Checkbox icon={<StarBorder />}
                                                     checkedIcon={<Star />}
                                                     checked={link.is_marked_as_read}
@@ -141,7 +145,7 @@ class AllView extends Component {
                                                 />
                                             </TableCell>
                                             <TableCell>
-                                                <IconButton 
+                                                <IconButton
                                                     aria-label="replay_link"
                                                     onClick={() => replayLink(link.id, link.user_id)}>
                                                     <ReplayIcon />

@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { withRouter } from 'react-router-dom'
 import { IconButton } from "@material-ui/core";
 import { deleteCategory, archiveCategory } from '../../APIs/Category';
+import {toast} from "react-toastify";
 
 const EditCategory = ({ match, updateParentCategory, uuid, history }) => {
     const { categoryID } = match.params;
@@ -34,7 +35,7 @@ const EditCategory = ({ match, updateParentCategory, uuid, history }) => {
                 .map(k => k.keyword);
             setExcludedKeywords(excludedArr);
             setKeywords(includedArr);
-            setCategoryName(category.name);
+            setCategoryName(obj.category_name);
         }
         setInitialEditData();
 
@@ -83,23 +84,26 @@ const EditCategory = ({ match, updateParentCategory, uuid, history }) => {
             setCategory(catObj);
             await EditCategoryAPIService.updateCategoryDetails(catObj);
             updateParentCategory(uuid);
+            toast.info(`Changed category name to "${categoryName}"`   )
         }
     }
 
     const deleteCategoryHandler = async () => {
+        toast.info(`Deleted category "${categoryName}"`)
         await deleteCategory(categoryID)
             .then(response => {
                 history.push('/');
-            }) 
+            })
     }
 
     const achivedCategoryHandler = async () => {
+        toast.info(`Archived category "${categoryName}"`)
         await archiveCategory(categoryID)
             .then(response => {
                 history.push('/');
-            }) 
+            })
     }
- 
+
     const alignment = {
         "display": "flex",
         "alignItems": "center"

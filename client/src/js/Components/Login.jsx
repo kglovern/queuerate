@@ -14,6 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 
 import './Login.css';
+import {toast} from "react-toastify";
 
 class Login extends React.Component {
 	constructor(props) {
@@ -24,10 +25,19 @@ class Login extends React.Component {
 		}
 	}
 
-	handleLogin = (event) => {
-		const user_creds = this.state;
-		login(user_creds);
+	handleLogin = async (event) => {
 		event.preventDefault();
+		const user_creds = this.state;
+		const result = await login(user_creds);
+		if (!result) {
+			toast.error("Invalid login credentials - please try again!", {
+				position: "top-center",
+				hideProgressBar: false,
+			})
+		} else {
+			console.log("Logged in")
+			window.location.reload()
+		}
 	}
 
 	changeHandler = event => {

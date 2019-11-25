@@ -13,6 +13,7 @@ import { IconButton } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import moment from 'moment';
 import ReplayIcon from '@material-ui/icons/Replay';
+import ProcessingState from "../ProcessingState";
 
 
 const CategoryView = ({match}) => {
@@ -53,17 +54,20 @@ const CategoryView = ({match}) => {
                 <Table>
                     <TableHead>
                         <TableRow>
+                            <TableCell />
                             <TableCell>Link</TableCell>
                             <TableCell>Last Updated</TableCell>
                             <TableCell>Categories</TableCell>
                             <TableCell>Mark as Read</TableCell>
-                            <TableCell></TableCell>
+                            <TableCell />
+                            <TableCell />
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        { 
+                        {
                             links.map( link => (
                                 <TableRow key={link.id}>
+                                    <TableCell><ProcessingState processing_state={link.processing_state}/></TableCell>
                                     <TableCell><a href={link.url} target="_blank">{link.link_title || link.url}</a></TableCell>
                                     <TableCell>{moment(link.updated_at).format("h:mm A - MMM Do")}</TableCell>
                                     <TableCell>
@@ -82,7 +86,7 @@ const CategoryView = ({match}) => {
                                         />
                                     </TableCell>
                                     <TableCell>
-                                                <IconButton 
+                                                <IconButton
                                                     aria-label="replay_link"
                                                     onClick={() => replayLink(link.id, link.user_id)}>
                                                     <ReplayIcon />
