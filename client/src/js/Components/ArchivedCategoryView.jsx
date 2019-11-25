@@ -11,7 +11,7 @@ import { get_uuid } from "../Utility/Firebase"
 import Button from '@material-ui/core/Button';
 
 class ArchivedCategoryView extends Component {
-    constructor(props) { 
+    constructor(props) {
         super(props)
         this.handleOnClick = this.handleOnClick.bind(this);
     }
@@ -44,16 +44,16 @@ class ArchivedCategoryView extends Component {
                         <TableBody>
                             {
                                 categories.map(category => {
-                                    return (   
+                                    return (
                                         <TableRow key={category.id}>
                                             <TableCell>{category.category_name}</TableCell>
                                             <TableCell>
-                                                <Button 
-                                                    variant="contained" 
+                                                <Button
+                                                    variant="contained"
                                                     color="primary"
                                                     id={category.id}
                                                     onClick={this.handleOnClick}>
-                                                    Unarchived
+                                                    Unarchive Category
                                                 </Button>
                                             </TableCell>
                                         </TableRow>)
