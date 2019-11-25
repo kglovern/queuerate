@@ -122,6 +122,7 @@ class User(Base):
     links = db.relationship('Link', backref='user', lazy='dynamic')
     categories = db.relationship('Category', backref='user', lazy='dynamic')
     forwarding_settings = db.relationship('ForwardingSettings', backref='user', lazy='dynamic')
+    default_integration = db.relationship('ForwardingSettings', uselist=False, backref='user_di')
 
     @property
     def serialized(self):
@@ -130,7 +131,8 @@ class User(Base):
             'uuid': self.uuid,
             'email': self.email,
             'categories': [category.user_serialized for category in self.categories],
-            'forwarding_settings': [category.serialized for category in self.forwarding_settings]
+            'forwarding_settings': [forwarding_setting.serialized for forwarding_setting in self.forwarding_settings],
+            'default_integration' : self.default_integration.serialized
         }
 
 

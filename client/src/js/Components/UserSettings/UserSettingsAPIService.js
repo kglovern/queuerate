@@ -9,12 +9,13 @@ export default {
                         {
                             user:
                             {
-                                forwarding_settings
+                                forwarding_settings,
+                                default_integration
                             }
                         }
                     }
                 } = await getUser(uuid);
-            return forwarding_settings;
+            return { "forwarding_settings": forwarding_settings, "default_integration": default_integration };
         } catch (e) {
             console.log(e);
             return [];
@@ -34,19 +35,20 @@ export default {
             return forwarding_settings;
         } catch (e) {
             console.log(e);
-            return {};
+            return null;
         }
     },
-    updateForwardingSetting: async ({ api_key, default_forwarding_url, id }) => {
+    updateForwardingSetting: async ({ api_key, default_forwarding_url, id }, uuid) => {
         try {
             const forwarding_settings = await axiosObj.patch(`/forwarding_settings/${id}`, {
                 api_key,
                 default_forwarding_url,
+                id
             });
             return forwarding_settings;
         } catch (e) {
             console.log(e);
-            return {};
+            return null;
         }
     }
 }

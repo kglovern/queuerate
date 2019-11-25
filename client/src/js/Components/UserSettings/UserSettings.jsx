@@ -16,6 +16,7 @@ import Typography from "@material-ui/core/Typography";
 
 const SettingsView = () => {
     const [forwardingSettings, setFS] = useState([]);
+    const [defaultIntegration, setDI] = useState(0);
 
     const alignment = {
         "display": "flex",
@@ -26,16 +27,18 @@ const SettingsView = () => {
     console.log(uuid)
 
     useEffect(() => {
-        /**
-         * Fetch all settings for the given user
-         * @returns {Promise<void>}
-         */
-        const fetchSettings = async () => {
-            const fs = await UserSettingsAPIService.fetchForwardingSettings(uuid);
-            console.log(fs);
-            setFS(fs);
-        }
-        fetchSettings();
+        // console.log("here");
+        // /**
+        //  * Fetch all settings for the given user
+        //  * @returns {Promise<void>}
+        //  */
+        // const fetchSettings = async () => {
+        //     const {forwarding_settings, default_integration} = await UserSettingsAPIService.fetchForwardingSettings(uuid);
+        //     console.log(forwarding_settings, default_integration);
+        //     setFS(forwarding_settings);
+        //     setDI(default_integration);
+        // }
+        // fetchSettings();
     }, [uuid]);
     return (
         <div>
@@ -52,9 +55,10 @@ const SettingsView = () => {
             </div>
 
             {
-                forwardingSettings.map(fs => (
-                    <ForwardingSettingView key={fs.id} forwardingSetting={fs} />
-                ))
+                <ForwardingSettingView forwardingSetting={forwardingSettings} defaultIntegration={defaultIntegration}/>
+                // forwardingSettings.map(forwarding_settings => (
+                //     <ForwardingSettingView key={forwarding_settings.id} forwardingSetting={forwarding_settings} />
+                // ))
                 /* {
                 forwardingSettings.map(link => (
                     <TableRow key={link.id}>
