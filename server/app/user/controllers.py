@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.models import User, Link, Category
+from app.models import User, Link, Category, Keyword
 from app.services.APIResponseBuilder import APIResponseBuilder
 from sqlalchemy.exc import SQLAlchemyError
 from app import db
@@ -110,6 +110,29 @@ def export_data_by_user_id(user_id):
 
 @user_controller.route('/import', methods=['POST'])
 def import_data_for_user():
-    data = request.files
-    print(data)
-    return ""
+    data = request.json
+    try:
+        for category in data["categories"]:
+            # Create new category
+            cat = Category(
+                user_id=data["uuid"],
+                category_name=category["name"]
+            )
+            db.session.add(cat)
+            db.session.commit()
+            # add keywords
+            for keyword in category["keywords"]:
+                k = Keyword(
+                    keyword=keyword["keyword"],
+                    is_excluded=keyword["is_excluded"],
+                    category_id=cat.id
+                )
+                db.session.add(k)
+            db.session.commit()
+        return APIResponseBuilder.success({
+            "success": True
+        })
+    except SQLAlchemyError as e:
+        return APIResponseBuilder.error(f"Issue running query: {e}")
+    except Exception as e:
+        return APIResponseBuilder.error(f"Error encountered: {e}")

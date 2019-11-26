@@ -12,6 +12,7 @@ import { get_uuid } from "../../Utility/Firebase"
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { IconButton } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
+import ImportExportWidget from "../DataPortability/ImportExportWidget";
 
 
 const SettingsView = () => {
@@ -50,7 +51,7 @@ const SettingsView = () => {
                     User Settings
                 </h1>
             </div>
-
+            <ImportExportWidget/>
             {
                 forwardingSettings.map(fs => (
                     <ForwardingSettingView key={fs.id} forwardingSetting={fs} />
