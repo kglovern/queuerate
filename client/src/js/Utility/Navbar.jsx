@@ -25,6 +25,8 @@ import ArchivedCategoryView from '../Components/ArchivedCategoryView'
 import './Navbar.css';
 import ManageLink from "../Components/ManageLink/ManageLink";
 
+import logo from '../../assets/logo.png';
+
 class Navbar extends Component {  
   constructor(props) {
     super(props);
@@ -46,8 +48,9 @@ class Navbar extends Component {
     return (
       <div className={classes.root}>
         <CssBaseline />
-        <AppBar position="fixed" className={classes.appBar}>
+        <AppBar position="fixed" className={classes.appBar} style={{backgroundColor: '#a4d1ff'}}>
           <Toolbar>
+            <img src={logo} alt="home" style={{height: '40px', marginLeft: '4%' }}/>
             <Button
               type="submit"
               variant="contained"
