@@ -43,7 +43,7 @@ class SignUp extends React.Component {
     return <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className="paper">
-      <img src={logo} alt="logo" style={{height: '10%', width: '50%', marginBottom: '10%'}}/>
+      <img src={logo} alt="logo" style={{width: '50%', marginBottom: '5%'}}/>
         
 			<Card>
 				<CardContent>

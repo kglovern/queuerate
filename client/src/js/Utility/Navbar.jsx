@@ -50,7 +50,7 @@ class Navbar extends Component {
         <CssBaseline />
         <AppBar position="fixed" className={classes.appBar} style={{backgroundColor: '#a4d1ff'}}>
           <Toolbar>
-            <img src={logo} alt="home" style={{height: '40px', marginLeft: '4%' }}/>
+            <a href="/"><img src={logo} alt="home" style={{height: '58px', marginLeft: '4%' }}/></a>
             <Button
               type="submit"
               variant="contained"
