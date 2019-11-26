@@ -1,9 +1,6 @@
 .logout {
-    background-color: #1976d2 !important;
-}
-
-.MuiToolbar-root {
     margin-left: auto !important;
+    background-color: #ffb100 !important;
 }
 
 .MuiListItem-root.add-button-box {

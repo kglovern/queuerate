@@ -29,6 +29,8 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import './Navbar.css';
 import ManageLink from "../Components/ManageLink/ManageLink";
 
+import logo from '../../assets/logo.png';
+
 class Navbar extends Component {
   constructor(props) {
     super(props);
@@ -50,11 +52,9 @@ class Navbar extends Component {
     return (
       <div className={classes.root}>
         <CssBaseline />
-        <AppBar position="fixed" className={classes.appBar}>
-          <Toolbar>
-            {/* <Typography variant="h6" noWrap>
-            Clipped drawer
-          </Typography> */}
+        <AppBar position="fixed" className={classes.appBar} style={{backgroundColor: '#a4d1ff'}}>
+            <Toolbar>
+          <a href="/"><img src={logo} alt="home" style={{height: '58px', marginLeft: '4%' }}/></a>
             <Link
               to={`/user_settings`}>
               <IconButton aria-label="user_settings">
@@ -128,9 +128,9 @@ class Navbar extends Component {
               render={(props) => <EditCategory {...props} uuid={get_uuid()} updateParentCategory={(uuid) => this.props.fetchCategories(uuid)} />}
             />
             <Route
-              exact
-              path="/link/:linkID/manage"
-              component={ManageLink} />
+                exact
+                path="/link/:linkID/manage"
+                component={ManageLink} />
             <Route
               exact
               path="/addCategory"

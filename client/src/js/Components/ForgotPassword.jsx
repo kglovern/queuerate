@@ -12,6 +12,10 @@ import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import logo from './../../assets/logo.png';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import "./ForgotPassword.css";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState();
@@ -23,13 +27,17 @@ const ForgotPassword = () => {
     }
         return <Container component="main" maxWidth="xs">
         <CssBaseline />
+
         <div className="paper">
-            <Typography component="h1" variant="h5">
+        <img src={logo} alt="logo" style={{width: '50%', marginBottom: '5%'}}/>
+        
+        <Card>
+            <CardContent>
+            <Typography component="h1" variant="h5" style={{ textAlign: "center"}}>
                 Forgot Your Password
       </Typography>
             <form className="form" onSubmit={onSubmit} noValidate>
                 <TextField
-                    variant="outlined"
                     margin="normal"
                     required
                     fullWidth
@@ -59,6 +67,8 @@ const ForgotPassword = () => {
                     </Grid>
                 </Grid>
             </form>
+            </CardContent>
+			</Card>
         </div>
     </Container>
     

@@ -12,6 +12,7 @@ import Button from '@material-ui/core/Button';
 import { fetchLinks, createLink, markAsRead, markAsUnread, replayLink } from '../APIs/Link';
 import { fetchCategories } from '../APIs/Category';
 import { get_uuid } from "../Utility/Firebase"
+import AddIcon from '@material-ui/icons/Add';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SettingsIcon from '@material-ui/icons/Settings';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -79,7 +80,7 @@ class AllView extends Component {
             <div>
                 <div style={{ display: 'flex' }}>
                     <TextField
-                        variant="outlined"
+                        
                         name="url"
                         className={"link_input"}
                         label="URL"
@@ -88,11 +89,11 @@ class AllView extends Component {
                         onChange={this.onChange}
                     />
                     <Button
-                        variant="contained"
-                        color="primary"
+                        
+                        color="default"
                         onClick={this.handleSubmit}
                     >
-                        Add
+                        <AddIcon />
                     </Button>
                     <Button
                         onClick={() => fetchLinks(get_uuid())}
