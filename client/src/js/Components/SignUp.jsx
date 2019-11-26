@@ -2,17 +2,17 @@ import React from 'react';
 import { signup } from "../Utility/Firebase";
 
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { withRouter } from "react-router-dom";
-
+import logo from './../../assets/logo.png';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 import './SignUp.css';
 
 class SignUp extends React.Component {
@@ -43,17 +43,18 @@ class SignUp extends React.Component {
     return <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className="paper">
-        <Avatar className="avatar">
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
+      <img src={logo} alt="logo" style={{height: '10%', width: '50%', marginBottom: '10%'}}/>
+        
+			<Card>
+				<CardContent>
+					
+        <Typography component="h1" variant="h5" style={{ textAlign: "center"}}>
           Sign Up
 		  </Typography>
         <form className="form" noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                variant="outlined"
                 required
                 fullWidth
                 id="email"
@@ -61,11 +62,11 @@ class SignUp extends React.Component {
                 name="email"
                 autoComplete="email"
                 onChange={this.changeHandler}
+                autoFocus
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                variant="outlined"
                 required
                 fullWidth
                 name="password"
@@ -95,6 +96,8 @@ class SignUp extends React.Component {
             </Grid>
           </Grid>
         </form>
+        </CardContent>
+			</Card>
       </div>
     </Container>
   }

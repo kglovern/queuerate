@@ -9,6 +9,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
   },
   appBar: {
+    backgroundColor: '#1976d2',
     zIndex: theme.zIndex.drawer + 1,
   },
   drawer: {
