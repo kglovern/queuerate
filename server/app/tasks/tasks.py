@@ -140,6 +140,7 @@ def categorize_entity(message):
 
 @celery.task
 def forward_link(message):
+    fs = None
     link = Link.query.get(message["link_id"])
     print(link.serialized)
     user = User.query.filter_by(uuid=link.user_id).first()
