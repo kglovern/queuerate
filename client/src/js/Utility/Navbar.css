@@ -3,6 +3,11 @@
     background-color: #ffb100 !important;
 }
 
+.settingsButton {
+    margin-left: auto !important;
+}
+
+
 .MuiListItem-root.add-button-box {
     display: flex;
     justify-content: flex-end;

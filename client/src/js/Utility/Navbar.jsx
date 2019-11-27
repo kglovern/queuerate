@@ -54,9 +54,12 @@ class Navbar extends Component {
         <CssBaseline />
         <AppBar position="fixed" className={classes.appBar} style={{backgroundColor: '#a4d1ff'}}>
             <Toolbar>
+
           <a href="/"><img src={logo} alt="home" style={{height: '58px', marginLeft: '4%' }}/></a>
-            <Link
-              to={`/user_settings`}>
+
+           <div className="settingsButton"> <Link
+              to={`/user_settings`}
+              >
               <IconButton aria-label="user_settings">
                 <SettingsIcon />
               </IconButton>
@@ -70,6 +73,7 @@ class Navbar extends Component {
             >
               Log Out
             </Button>
+           </div>
           </Toolbar>
         </AppBar>
         <Drawer
