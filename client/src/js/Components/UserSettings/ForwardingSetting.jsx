@@ -11,6 +11,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import SaveIcon from '@material-ui/icons/Save';
 import { get_uuid } from "../../Utility/Firebase"
+import {toast} from "react-toastify";
 
 const integrationTypes = {
     1: "Todoist",
@@ -89,9 +90,11 @@ const ForwardingSettingView = () => {
     const onSaveClick = (e) => {
         if (id != null) {
             UserSettingsAPIService.updateForwardingSetting(apiKey, project, id, uuid).then(createdFS => {fetchSettings();});
+            toast.info("Updated integration key")
         }
         else {
             UserSettingsAPIService.createForwardingSetting(apiKey, project, it, uuid).then(createdFS => {fetchSettings();});
+            toast.info("Created new integration")
         }
     }
 
@@ -134,7 +137,7 @@ const ForwardingSettingView = () => {
                     </TextField> */}
                     <Button
                         variant="contained"
-                        startIcon={<SaveIcon />} 
+                        startIcon={<SaveIcon />}
                         type="submit"
                         onClick={onSaveClick}
                         >
