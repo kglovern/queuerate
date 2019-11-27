@@ -18,6 +18,7 @@ def forwardLinkToTodoist(url, user_api_token, project_id, labels):
         print(inbox_project)
     except Exception as e:
         print(f"Could not get inbox project: {e}")
+        return
 
     labelsInTodoist = api.state["labels"]
     print(labelsInTodoist)

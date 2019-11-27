@@ -19,10 +19,13 @@ def create_new_forwarding_settings():
     try:
         data = request.json
         valid_apps = set(item.value for item in ThirdPartyIntegration)
-        forwarding_app = data['forwarding_app']
-
+        forwarding_app = int(data['forwarding_app'])
+        print(forwarding_app)
+        print(valid_apps)
+        print(forwarding_app in valid_apps)
+        print(forwarding_app == ThirdPartyIntegration.DEFAULT.value)
         # not a valid app or the default app
-        if forwarding_app not in valid_apps or forwarding_app == ThirdPartyIntegration.DEFAULT.value:
+        if (forwarding_app not in valid_apps) or forwarding_app == ThirdPartyIntegration.DEFAULT.value:
             return APIResponseBuilder.failure({
                 "invalid_id": f"Not a valid forwarding app for value of {forwarding_app}"
             })
@@ -32,16 +35,16 @@ def create_new_forwarding_settings():
 
         forwarding_settings = ForwardingSettings(
             user_id=data["user_id"],
-            forwarding_app=data['forwarding_app'],
+            forwarding_app=forwarding_app,
             api_key=data["api_key"],
             default_forwarding_url=data['default_forwarding_url'],
 
         )
         db.session.add(forwarding_settings)
 
-        # # update the default integration
-        # user = User.query.filter_by(uuid=forwarding_settings.user_id).first()
-        # user.default_integration.add(forwarding_settings)
+        # update the default integration
+        user = User.query.filter_by(uuid=forwarding_settings.user_id).first()
+        user.default_integration = forwarding_settings.forwarding_app
         db.session.commit()
         return APIResponseBuilder.success({
             "forwarding_settings": forwarding_settings
@@ -80,9 +83,9 @@ def update_forwarding_settings(forwarding_settings_id):
             ForwardingSettings.query.filter_by(id=forwarding_settings_id).delete()
             db.session.add(new_fs)
 
-            # # update the default integration
-            # user = User.query.filter_by(uuid=forwarding_settings.user_id).first()
-            # forwarding_settings.user_di = user
+            # update the default integration
+            user = User.query.filter_by(uuid=forwarding_settings.user_id).first()
+            user.default_integration = forwarding_settings.forwarding_app
             db.session.commit()
             return APIResponseBuilder.success({
                 "forwarding_settings": new_fs

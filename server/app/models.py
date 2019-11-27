@@ -122,7 +122,7 @@ class User(Base):
     links = db.relationship('Link', backref='user', lazy='dynamic')
     categories = db.relationship('Category', backref='user', lazy='dynamic')
     forwarding_settings = db.relationship('ForwardingSettings', backref='user', lazy='dynamic')
-    default_integration = db.relationship('ForwardingSettings', uselist=False, backref='user_di')
+    default_integration = db.Column(db.Enum(ThirdPartyIntegration))
 
     @property
     def serialized(self):
@@ -132,7 +132,7 @@ class User(Base):
             'email': self.email,
             'categories': [category.user_serialized for category in self.categories],
             'forwarding_settings': [forwarding_setting.serialized for forwarding_setting in self.forwarding_settings],
-            'default_integration' : self.default_integration.serialized
+            'default_integration' : self.default_integration
         }
 
 
@@ -143,7 +143,7 @@ class ForwardingSettings(Base):
     """
     __table_name__ = "ForwardingSettings"
 
-    user_id = db.Column(db.String, db.ForeignKey('user.uuid'), nullable=False, unique=True)
+    user_id = db.Column(db.String, db.ForeignKey('user.uuid'), nullable=False)
     forwarding_app = db.Column(db.Enum(ThirdPartyIntegration)) #TODO: don't allow to set to DEFAULT
     api_key = db.Column(db.String(100))
     default_forwarding_url = db.Column(db.String(100))

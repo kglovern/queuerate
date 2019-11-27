@@ -139,18 +139,22 @@ def forward_link(message):
     link = Link.query.get(message["link_id"])
     print(link.serialized)
     user = User.query.filter_by(uuid=link.user_id).first()
-    print(user.default_integration.serialized)
-    integrationType = user.default_integration.forwarding_app
+    try:
+        fs = user.forwarding_settings.filter_by(forwarding_app=user.default_integration).first()
+        print(fs)
+    except Exception as e:
+        print("No existing third party integration for user. ", e)
+    integrationType = fs.forwarding_app
 
     if integrationType == ThirdPartyIntegration.TODOIST:
         categoryNames = [category.category_name for category in link.categories]
         integrations.forwardLinkToTodoist(link.url, 
-            user.default_integration.api_key,
-            user.default_integration.default_forwarding_url,
+            fs.api_key,
+            fs.default_forwarding_url,
             categoryNames
             ) 
     else:
-        print("Unsupported Third Party Integration %d", integrationType)
+        print(f"Unsupported Third Party Integration {integrationType}")
         return
     link.processing_state = ProcessingState.FORWARDED
     db.session.commit()

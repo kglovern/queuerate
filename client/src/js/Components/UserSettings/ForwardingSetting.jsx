@@ -54,10 +54,9 @@ const ForwardingSettingView = () => {
         }
         console.log(forwarding_settings, default_integration);
         setFS(forwarding_settings);
-        const integrationType = default_integration.forwarding_app || 1;
+        const integrationType = default_integration || 1;
         setIT(integrationType);
         const currentFS = getFSByIntegrationType(forwarding_settings, integrationType);
-        console.log(currentFS);
         setID(currentFS ? currentFS.id || null : null)
         setApiKey(currentFS ? currentFS.api_key || "" : "");
         setProject(currentFS ? currentFS.default_forwarding_url || "" : "")
@@ -108,7 +107,6 @@ const ForwardingSettingView = () => {
                 <FormControl>
                 <InputLabel id="demo-simple-select-label">Integration Type</InputLabel>
                     <Select
-                        labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={it}
                         onChange={handleIntegrationTypeChange}
@@ -126,13 +124,14 @@ const ForwardingSettingView = () => {
                         onChange={handleAPIKeyChange}
                     >
                     </TextField>
-                    <TextField
+                    {/* <TextField
                         label="Project"
                         variant="filled"
                         value={project}
                         onChange={handleProjectChange}
+                        visibility="hidden"
                     >
-                    </TextField>
+                    </TextField> */}
                     <Button
                         variant="contained"
                         startIcon={<SaveIcon />} 
