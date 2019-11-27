@@ -143,7 +143,7 @@ class ForwardingSettings(Base):
     """
     __table_name__ = "ForwardingSettings"
 
-    user_id = db.Column(db.String, db.ForeignKey('user.uuid'), nullable=False)
+    user_id = db.Column(db.String, db.ForeignKey('user.uuid'), nullable=False, unique=True)
     forwarding_app = db.Column(db.Enum(ThirdPartyIntegration)) #TODO: don't allow to set to DEFAULT
     api_key = db.Column(db.String(100))
     default_forwarding_url = db.Column(db.String(100))
@@ -164,6 +164,7 @@ class ProcessingState(enum.IntEnum):
     UNPROCESSED = 0
     PROCESSED = 1
     ERROR = 2
+    FORWARDED = 3
 
 
 class Link(Base):

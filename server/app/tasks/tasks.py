@@ -2,7 +2,8 @@ from celery import Celery, chain
 from celery.utils.log import get_task_logger
 from celery.exceptions import CeleryError
 from bs4 import BeautifulSoup
-from app.models import Category, Link, ProcessingState, RelevantKeyword
+from app.models import Category, Link, ProcessingState, RelevantKeyword, User, ForwardingSettings, ThirdPartyIntegration
+from app.integrations import integrations
 from app import db, app
 import requests
 import pke
@@ -32,6 +33,7 @@ def process_link(link):
         get_content_from_html.s(),
         get_keywords_from_content.s(),
         categorize_entity.s(),
+        forward_link.s(),
     )
     print("Kicking off ")
     pipeline.delay(message)
@@ -132,6 +134,30 @@ def categorize_entity(message):
     db.session.commit()
     return message
 
+@celery.task
+def forward_link(message):
+    link = Link.query.get(message["link_id"])
+    print(link.serialized)
+    user = User.query.filter_by(uuid=link.user_id).first()
+    print(user.default_integration.serialized)
+    integrationType = user.default_integration.forwarding_app
+
+    if integrationType == ThirdPartyIntegration.TODOIST:
+        categoryNames = [category.category_name for category in link.categories]
+        integrations.forwardLinkToTodoist(link.url, 
+            user.default_integration.api_key,
+            user.default_integration.default_forwarding_url,
+            categoryNames
+            ) 
+    else:
+        print("Unsupported Third Party Integration %d", integrationType)
+        return
+    link.processing_state = ProcessingState.FORWARDED
+    db.session.commit()
+    
+    return message
+
+
 
 def map_keywords_to_dict(keywords):
     """
@@ -145,3 +171,4 @@ def map_keywords_to_dict(keywords):
     for keyword in keywords:
         key_dict[keyword[0]] = keyword[1]
     return key_dict
+

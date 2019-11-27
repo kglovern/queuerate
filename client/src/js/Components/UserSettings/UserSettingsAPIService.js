@@ -21,7 +21,7 @@ export default {
             return [];
         }
     },
-    createForwardingSetting: async ({ api_key, default_forwarding_url, forwarding_app }, uuid) => {
+    createForwardingSetting: async (api_key, default_forwarding_url, forwarding_app, uuid) => {
         try {
             const forwarding_settings = await axiosObj.post(`/forwarding_settings/`, {
                 api_key,
@@ -38,7 +38,7 @@ export default {
             return null;
         }
     },
-    updateForwardingSetting: async ({ api_key, default_forwarding_url, id }, uuid) => {
+    updateForwardingSetting: async (api_key, default_forwarding_url, id, uuid) => {
         try {
             const forwarding_settings = await axiosObj.patch(`/forwarding_settings/${id}`, {
                 api_key,

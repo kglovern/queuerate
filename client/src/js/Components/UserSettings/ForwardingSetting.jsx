@@ -18,14 +18,6 @@ const integrationTypes = {
     3: "Instapaper"
 }
 
-const createFS = (integrationType) => {
-    return {
-        "forwarding_app" : integrationType,
-        "default_forwarding_url" : "",
-        "api_key" : "",
-    }
-}
-
 const getFSByIntegrationType = (forwardingSettings, integrationType) => {
     const fs = forwardingSettings.filter((fs) => {
         return fs.forwarding_app == integrationType;
@@ -36,8 +28,10 @@ const getFSByIntegrationType = (forwardingSettings, integrationType) => {
 const ForwardingSettingView = () => {
     const defaultIT = 1;
     const [fs, setFS] = useState([]);
-    const [currentFS, setCurrentFS] = useState(createFS(defaultIT));
     const [it, setIT] = useState(defaultIT)
+    const [apiKey, setApiKey] = useState("")
+    const [project, setProject] = useState("")
+    const [id, setID] = useState(null)
 
     const alignment = {
         "display": "flex",
@@ -63,10 +57,12 @@ const ForwardingSettingView = () => {
             console.log(forwarding_settings, default_integration);
             setFS(forwarding_settings);
             const integrationType = default_integration.forwarding_app || 1;
-            setIT(integrationType || -1);
-            const currentFS = getFSByIntegrationType(forwarding_settings, integrationType) || createFS(integrationType);
+            setIT(integrationType);
+            const currentFS = getFSByIntegrationType(forwarding_settings, integrationType);
             console.log(currentFS);
-            setCurrentFS(currentFS);
+            setID(currentFS ? currentFS.id || null : null)
+            setApiKey(currentFS ? currentFS.api_key || "" : null);
+            setProject(currentFS ? currentFS.default_forwarding_url || "" : null)
         }
         fetchSettings();
     }, [uuid]);
@@ -75,34 +71,34 @@ const ForwardingSettingView = () => {
     const handleIntegrationTypeChange = (e) => {
         const { value } = e.target;
         setIT(value);
-        setCurrentFS(getFSByIntegrationType(fs, value) || createFS(value));
+        const currentFS = getFSByIntegrationType(fs, value);
+        setID(currentFS ? currentFS.id || null : null)
+        setApiKey(currentFS ? currentFS.api_key || "" : null);
+        setProject(currentFS ? currentFS.default_forwarding_url || "" : null);
     }
 
     const handleAPIKeyChange =  (e) => {
         const { value } = e.target;
-        const newFS = currentFS;
-        newFS.api_key = value;
-        console.log(newFS.api_key);
-        setCurrentFS(newFS);
+        setApiKey(value);
     }
 
     const handleProjectChange =  (e) => {
         const { value } = e.target;
-        const newFS = currentFS;
-        newFS.default_forwarding_url = value;
-        setCurrentFS(newFS);
+        setProject(value);
     }
 
     const onSaveClick = (e) => {
         var createdFS;
-        if (fs.id != null) {
-            createdFS = UserSettingsAPIService.updateForwardingSetting(fs, uuid);
+        if (id != null) {
+            createdFS = UserSettingsAPIService.updateForwardingSetting(apiKey, project, id, uuid);
         }
         else {
-            createdFS = UserSettingsAPIService.createForwardingSetting(fs, uuid);
+            createdFS = UserSettingsAPIService.createForwardingSetting(apiKey, project, it, uuid);
         }
         if (createdFS != null) {
-            setCurrentFS(createdFS);
+            setID(createdFS.id)
+            setApiKey(createdFS.api_key || "");
+            setProject(createdFS.default_forwarding_url || "");
         }
     }
 
@@ -132,14 +128,14 @@ const ForwardingSettingView = () => {
                     <TextField
                         label="API Key"
                         variant="filled"
-                        value={currentFS.api_key}
+                        value={apiKey}
                         onChange={handleAPIKeyChange}
                     >
                     </TextField>
                     <TextField
                         label="Project"
                         variant="filled"
-                        value={currentFS.default_forwarding_url}
+                        value={project}
                         onChange={handleProjectChange}
                     >
                     </TextField>
