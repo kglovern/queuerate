@@ -27,5 +27,9 @@ CSRF_SESSION_KEY = "secret"
 SECRET_KEY = "secret"
 
 # Celery variables
-CELERY_BROKER_URL = 'pyamqp://guest@localhost//'
+CELERY_BROKER_URL = 'pyamqp://guest@localhost//' #production
+#CELERY_BROKER_URL = 'django://' # development
+#INSTALLED_APPS = ('kombu.transport.django', ) # development
+
 CELERY_RESULT_BACKEND = ''
+

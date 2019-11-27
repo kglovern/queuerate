@@ -1,8 +1,9 @@
-from flask import Blueprint, request
-from app.models import User, Link, Category
+from flask import Blueprint, request, jsonify
+from app.models import User, Link, Category, Keyword
 from app.services.APIResponseBuilder import APIResponseBuilder
 from sqlalchemy.exc import SQLAlchemyError
 from app import db
+from app.DataPortability import DataPortabilityService
 
 user_controller = Blueprint("user_controller", __name__)
 
@@ -88,6 +89,48 @@ def get_all_links_by_user(user_id):
         links = Link.query.filter_by(user_id=user_id).all()
         return APIResponseBuilder.success({
             "links": links,
+        })
+    except SQLAlchemyError as e:
+        return APIResponseBuilder.error(f"Issue running query: {e}")
+    except Exception as e:
+        return APIResponseBuilder.error(f"Error encountered: {e}")
+
+
+@user_controller.route('/<user_id>/export', methods=["GET"])
+def export_data_by_user_id(user_id):
+    try:
+        export_data = jsonify(DataPortabilityService.export_user_data(user_id))
+        export_data.headers['Content-Disposition'] = f"attachment;filename={user_id}_export.json"
+        return export_data
+    except SQLAlchemyError as e:
+        return APIResponseBuilder.error(f"Issue running query: {e}")
+    except Exception as e:
+        return APIResponseBuilder.error(f"Error encountered: {e}")
+
+
+@user_controller.route('/import', methods=['POST'])
+def import_data_for_user():
+    data = request.json
+    try:
+        for category in data["categories"]:
+            # Create new category
+            cat = Category(
+                user_id=data["uuid"],
+                category_name=category["name"]
+            )
+            db.session.add(cat)
+            db.session.commit()
+            # add keywords
+            for keyword in category["keywords"]:
+                k = Keyword(
+                    keyword=keyword["keyword"],
+                    is_excluded=keyword["is_excluded"],
+                    category_id=cat.id
+                )
+                db.session.add(k)
+            db.session.commit()
+        return APIResponseBuilder.success({
+            "success": True
         })
     except SQLAlchemyError as e:
         return APIResponseBuilder.error(f"Issue running query: {e}")

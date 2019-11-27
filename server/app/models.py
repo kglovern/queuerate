@@ -1,5 +1,6 @@
 from app import db
 import enum
+from datetime import datetime
 
 
 class Base(db.Model):
@@ -30,6 +31,14 @@ link_category = db.Table('link_category',
                          )
 
 
+class ThirdPartyIntegration(enum.IntEnum):
+    """ An enum to represent the third party integration being connected to """
+    DEFAULT = 0
+    TODOIST = 1
+    POCKET = 2
+    INSTAPAPER = 3
+
+
 class Category(Base):
     """
     Entity representing a category
@@ -40,6 +49,8 @@ class Category(Base):
     user_id = db.Column(db.String(36), db.ForeignKey('user.uuid'), nullable=False, )
     category_name = db.Column(db.String(50), nullable=False)
     is_archived = db.Column(db.Boolean, default=False)
+    forwarding_app = db.Column(db.Enum(ThirdPartyIntegration), default=ThirdPartyIntegration.DEFAULT)
+    forwarding_url = db.Column(db.String(250))
     keywords = db.relationship('Keyword', backref='category', lazy='dynamic', cascade="delete")
     links = db.relationship('Link',
                             secondary=link_category,
@@ -57,6 +68,13 @@ class Category(Base):
         }
 
     @property
+    def export_serialized(self):
+        return {
+            'name': self.category_name,
+            'keywords': [keyword.export_serialized for keyword in self.keywords]
+        }
+
+    @property
     def serialized(self):
         keywords_list = []
         for row in self.keywords:
@@ -70,6 +88,8 @@ class Category(Base):
             'user_id': self.user_id,
             'category_name': self.category_name,
             'is_archived': self.is_archived,
+            'forwarding_app': self.forwarding_app,
+            'forwarding_url': self.forwarding_url,
             'created_at': self.created_at,
             'updated_at': self.updated_at,
             'keywords': keywords_list
@@ -86,6 +106,13 @@ class Keyword(Base):
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
     keyword = db.Column(db.String, nullable=False)
     is_excluded = db.Column(db.Boolean, default=False)
+
+    @property
+    def export_serialized(self):
+        return {
+            'keyword': self.keyword,
+            'is_excluded': self.is_excluded
+        }
 
     @property
     def serialized(self):
@@ -109,6 +136,15 @@ class User(Base):
     email = db.Column(db.String, nullable=False)
     links = db.relationship('Link', backref='user', lazy='dynamic')
     categories = db.relationship('Category', backref='user', lazy='dynamic')
+    forwarding_settings = db.relationship('ForwardingSettings', backref='user', lazy='dynamic')
+
+    @property
+    def export_serialization(self):
+        return {
+            'export_from': self.uuid,
+            'export_time': datetime.now(),
+            'categories': [category.export_serialized for category in self.categories]
+        }
 
     @property
     def serialized(self):
@@ -116,7 +152,31 @@ class User(Base):
             'id': self.id,
             'uuid': self.uuid,
             'email': self.email,
-            'categories': [category.user_serialized for category in self.categories]
+            'categories': [category.user_serialized for category in self.categories],
+            'forwarding_settings': [category.serialized for category in self.forwarding_settings]
+        }
+
+
+class ForwardingSettings(Base):
+    """
+    Entity representing a forwarding setting
+    Belongs to a single user
+    """
+    __table_name__ = "ForwardingSettings"
+
+    user_id = db.Column(db.String, db.ForeignKey('user.uuid'), nullable=False)
+    forwarding_app = db.Column(db.Enum(ThirdPartyIntegration)) #TODO: don't allow to set to DEFAULT
+    api_key = db.Column(db.String(100))
+    default_forwarding_url = db.Column(db.String(100))
+
+    @property
+    def serialized(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'forwarding_app': self.forwarding_app,
+            'api_key': self.api_key,
+            'default_forwarding_url': self.default_forwarding_url
         }
 
 
