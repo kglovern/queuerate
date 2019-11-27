@@ -8,9 +8,13 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { replayLinkWithoutDispatch } from '../../APIs/Link';
 import { IconButton } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import moment from 'moment';
+import ReplayIcon from '@material-ui/icons/Replay';
+import ProcessingState from "../ProcessingState";
+
 
 const CategoryView = ({match}) => {
     const { categoryID } = match.params;
@@ -30,6 +34,11 @@ const CategoryView = ({match}) => {
         }
         fetchCategoryAndLinks();
     }, [categoryID]);
+
+    const replayLink = async (id, user_id) => {
+        await replayLinkWithoutDispatch(id, user_id);
+    }
+
     return (
         <div>
             <h1>
@@ -45,17 +54,20 @@ const CategoryView = ({match}) => {
                 <Table>
                     <TableHead>
                         <TableRow>
+                            <TableCell />
                             <TableCell>Link</TableCell>
                             <TableCell>Last Updated</TableCell>
                             <TableCell>Categories</TableCell>
                             <TableCell>Mark as Read</TableCell>
-                            <TableCell></TableCell>
+                            <TableCell />
+                            <TableCell />
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {
                             links.map( link => (
                                 <TableRow key={link.id}>
+                                    <TableCell><ProcessingState processing_state={link.processing_state}/></TableCell>
                                     <TableCell><a href={link.url} target="_blank">{link.link_title || link.url}</a></TableCell>
                                     <TableCell>{moment(link.updated_at).format("h:mm A - MMM Do")}</TableCell>
                                     <TableCell>
@@ -73,6 +85,13 @@ const CategoryView = ({match}) => {
                                                     read_state={link.is_marked_as_read}
                                         />
                                     </TableCell>
+                                    <TableCell>
+                                                <IconButton
+                                                    aria-label="replay_link"
+                                                    onClick={() => replayLink(link.id, link.user_id)}>
+                                                    <ReplayIcon />
+                                                </IconButton>
+                                            </TableCell>
                                     <TableCell size="small">
                                         <Link
                                             to={`/link/${link.id}/manage`}>

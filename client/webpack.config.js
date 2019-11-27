@@ -14,7 +14,7 @@ module.exports = {
       hash: false,
       title: "Curation Page",
       template: "index.html",
-      filename: "testindex.html" //relative to root of the application
+      filename: "index.html" //relative to root of the application
     }),
     new webpack.DefinePlugin({
       "process.env.API_KEY": JSON.stringify(
@@ -49,12 +49,16 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        exclude: /node_modules/,
         use: ["style-loader", "css-loader"]
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/i,
-        use: ["file-loader"]
+        use: {
+          loader: "file-loader",
+          options: {
+            name: "assets/[name].[ext]"
+          }
+        }
       }
     ]
   }

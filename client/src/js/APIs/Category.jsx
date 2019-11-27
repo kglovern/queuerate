@@ -1,6 +1,7 @@
 import { store_categories } from '../../store/actions/category'
-import { get, post } from '../Utility/axios';
+import { get, post, axiosObj } from '../Utility/axios';
 import { createKeyword } from './Keyword'
+import { get_uuid } from "../Utility/Firebase"
 
 export function fetchCategories(uuid) {
     return dispatch => {
@@ -44,3 +45,37 @@ export const createCategory = category =>
                     console.log(error);
                 });
     }
+
+
+export const deleteCategory = catagory_id => {
+    return axiosObj.delete(`/categories/${catagory_id}`)
+        .then(function (response) {
+            // console.log(response)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+
+export const updateCategory = (category_id, is_archived, category_name) => 
+    dispatch => {
+        return axiosObj.patch(`/categories/${category_id}`, {
+            is_archived,
+            category_name
+        }).then(function (response) {
+            dispatch(fetchCategories(get_uuid()))
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+
+export const archiveCategory = (category_id) => {
+    return axiosObj.patch(`/categories/${category_id}`, {
+        is_archived:true,
+    }).then(function (response) {
+        
+    }).catch(function (error) {
+        console.log(error);
+    });
+}
+    

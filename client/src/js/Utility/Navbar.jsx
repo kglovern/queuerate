@@ -22,11 +22,14 @@ import Divider from '@material-ui/core/Divider';
 import UncategorizedView from '../Components/UncategorizedView';
 import SettingsView from '../Components/UserSettings/UserSettings';
 import { get_uuid } from "../Utility/Firebase"
+import ArchivedCategoryView from '../Components/ArchivedCategoryView'
 import { IconButton } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 
 import './Navbar.css';
 import ManageLink from "../Components/ManageLink/ManageLink";
+
+import logo from '../../assets/logo.png';
 
 class Navbar extends Component {
   constructor(props) {
@@ -49,11 +52,9 @@ class Navbar extends Component {
     return (
       <div className={classes.root}>
         <CssBaseline />
-        <AppBar position="fixed" className={classes.appBar}>
-          <Toolbar>
-            {/* <Typography variant="h6" noWrap>
-            Clipped drawer
-          </Typography> */}
+        <AppBar position="fixed" className={classes.appBar} style={{backgroundColor: '#a4d1ff'}}>
+            <Toolbar>
+          <a href="/"><img src={logo} alt="home" style={{height: '58px', marginLeft: '4%' }}/></a>
             <Link
               to={`/user_settings`}>
               <IconButton aria-label="user_settings">
@@ -81,7 +82,6 @@ class Navbar extends Component {
           <div className={classes.toolbar} />
           <List>
             <ListItem button
-              // key={index}
               onClick={() => history.push('/')}>
               <ListItemText primary={'All'} />
             </ListItem>
@@ -94,9 +94,12 @@ class Navbar extends Component {
             ))}
             <Divider />
             <ListItem button
-              // key={index}
               onClick={() => history.push('/uncategorized')}>
-              <ListItemText primary={'Uncategorized'} />
+              <ListItemText primary={'Uncategorized Links'} />
+            </ListItem>
+            <ListItem button
+              onClick={() => history.push('/archivedCategories')}>
+              <ListItemText primary={'Archived Categories'} />
             </ListItem>
           </List>
           <ListItem className="add-button-box" >
@@ -117,7 +120,7 @@ class Navbar extends Component {
             <Route
               exact
               path="/category/:categoryID"
-              component={CategoryView}
+              render={(props) => <CategoryView {...props} />}
             />
             <Route
               exact
@@ -125,9 +128,9 @@ class Navbar extends Component {
               render={(props) => <EditCategory {...props} uuid={get_uuid()} updateParentCategory={(uuid) => this.props.fetchCategories(uuid)} />}
             />
             <Route
-              exact
-              path="/link/:linkID/manage"
-              component={ManageLink} />
+                exact
+                path="/link/:linkID/manage"
+                component={ManageLink} />
             <Route
               exact
               path="/addCategory"
@@ -136,6 +139,10 @@ class Navbar extends Component {
               exact
               path="/uncategorized"
               component={UncategorizedView} />
+              <Route
+              exact
+              path="/archivedCategories"
+              component={ArchivedCategoryView} />
             <Route
               exact
               path="/user_settings">
@@ -153,7 +160,7 @@ class Navbar extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  categories: state.category ? state.category.categories : []
+  categories: state.category ? state.category.categories.filter(el => !el.is_archived) : []
 })
 
 const mapDispatchToProps = (dispatch) => ({

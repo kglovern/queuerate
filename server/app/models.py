@@ -1,5 +1,6 @@
 from app import db
 import enum
+from datetime import datetime
 
 
 class Base(db.Model):
@@ -50,7 +51,7 @@ class Category(Base):
     is_archived = db.Column(db.Boolean, default=False)
     forwarding_app = db.Column(db.Enum(ThirdPartyIntegration), default=ThirdPartyIntegration.DEFAULT)
     forwarding_url = db.Column(db.String(250))
-    keywords = db.relationship('Keyword', backref='category', lazy='dynamic')
+    keywords = db.relationship('Keyword', backref='category', lazy='dynamic', cascade="delete")
     links = db.relationship('Link',
                             secondary=link_category,
                             lazy='subquery',
@@ -64,6 +65,13 @@ class Category(Base):
             'category_name': self.category_name,
             'is_archived': self.is_archived,
             'link_count': len(self.links)
+        }
+
+    @property
+    def export_serialized(self):
+        return {
+            'name': self.category_name,
+            'keywords': [keyword.export_serialized for keyword in self.keywords]
         }
 
     @property
@@ -100,6 +108,13 @@ class Keyword(Base):
     is_excluded = db.Column(db.Boolean, default=False)
 
     @property
+    def export_serialized(self):
+        return {
+            'keyword': self.keyword,
+            'is_excluded': self.is_excluded
+        }
+
+    @property
     def serialized(self):
         return {
             'id': self.id,
@@ -123,6 +138,14 @@ class User(Base):
     categories = db.relationship('Category', backref='user', lazy='dynamic')
     forwarding_settings = db.relationship('ForwardingSettings', backref='user', lazy='dynamic')
     default_integration = db.Column(db.Enum(ThirdPartyIntegration))
+
+    @property
+    def export_serialization(self):
+        return {
+            'export_from': self.uuid,
+            'export_time': datetime.now(),
+            'categories': [category.export_serialized for category in self.categories]
+        }
 
     @property
     def serialized(self):
@@ -219,5 +242,3 @@ class RelevantKeyword(Base):
             'relevance': self.relevance,
             'did_match': self.did_match
         }
-
-

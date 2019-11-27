@@ -43,12 +43,16 @@ def create_link():
     # TODO: validate user ID
     try:
         data = request.json
-        link = Link(
-            user_id=data['user_id'],
-            url=data['url'],
-        )
-        db.session.add(link)
-        db.session.commit()
+        # See if this specific user has a link entity with this specific url
+        # This should prevent a link from being added twice but also run it through regardless
+        link = Link.query.filter_by(user_id=data['user_id'], url=data['url']).first()
+        if not link:
+            link = Link(
+                user_id=data['user_id'],
+                url=data['url'],
+            )
+            db.session.add(link)
+            db.session.commit()
         process_link(link)
         return APIResponseBuilder.success({
             "link": link
@@ -215,6 +219,10 @@ def categorize_link(link_id):
     try:
         link = Link.query.get(link_id)
         if link:
+            link.processing_state = ProcessingState.UNPROCESSED
+            link.categories = []
+            db.session.add(link)
+            db.session.commit()
             process_link(link)
             return APIResponseBuilder.success({
                 "link": link
@@ -233,7 +241,6 @@ def categorize_link(link_id):
 def recategorize_link(link_id):
     try:
         data = request.json
-        print(data)
         link = Link.query.get(link_id)
         if link:
             link.categories = []  # Remove all current relations

@@ -2,18 +2,21 @@ import React from 'react';
 import { login } from "../Utility/Firebase"
 import { withRouter } from "react-router-dom";
 
+import Card from '@material-ui/core/Card';
+
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 
 import './Login.css';
+import logo from './../../assets/logo.png';
+import {toast} from "react-toastify";
+import CardContent from '@material-ui/core/CardContent';
 
 class Login extends React.Component {
 	constructor(props) {
@@ -24,10 +27,19 @@ class Login extends React.Component {
 		}
 	}
 
-	handleLogin = (event) => {
-		const user_creds = this.state;
-		login(user_creds);
+	handleLogin = async (event) => {
 		event.preventDefault();
+		const user_creds = this.state;
+		const result = await login(user_creds);
+		if (!result) {
+			toast.error("Invalid login credentials - please try again!", {
+				position: "top-center",
+				hideProgressBar: false,
+			})
+		} else {
+			console.log("Logged in")
+			window.location.reload()
+		}
 	}
 
 	changeHandler = event => {
@@ -43,15 +55,17 @@ class Login extends React.Component {
 		return <Container component="main" maxWidth="xs">
 			<CssBaseline />
 			<div className="paper">
-				<Avatar className="avatar">
-					<LockOutlinedIcon />
-				</Avatar>
-				<Typography component="h1" variant="h5">
+				<img src={logo} alt="logo" style={{width: '50%', marginBottom: '5%'}}/>
+			
+			<Card>
+				<CardContent>
+					
+				<Typography component="h1" variant="h5" style={{ textAlign: "center"}}>
 					Sign in
 		  </Typography>
+		  
 				<form className="form" noValidate>
 					<TextField
-						variant="outlined"
 						margin="normal"
 						required
 						fullWidth
@@ -63,7 +77,7 @@ class Login extends React.Component {
 						autoFocus
 					/>
 					<TextField
-						variant="outlined"
+						
 						margin="normal"
 						required
 						fullWidth
@@ -85,19 +99,20 @@ class Login extends React.Component {
 					>
 						Sign In
 			</Button>
-					<Grid container>
-						{/*<Grid item xs>
-				<Link href="#" variant="body2">
-				  Forgot password?
+
+				<Link href="/forgotpassword" variant="body2">
+				  Forgot your password?
 				</Link>
-			  </Grid>*/}
+			  
 						<Grid item>
 							<Link href="/signup" variant="body2">
-								{"Don't have an account? Sign Up"}
+								Don't have an account? Sign Up
 							</Link>
-						</Grid>
-					</Grid>
+							</Grid>
+
 				</form>
+				</CardContent>
+			</Card>
 			</div>
 		</Container>
 	}

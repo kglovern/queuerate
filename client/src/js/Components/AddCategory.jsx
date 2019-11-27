@@ -7,6 +7,7 @@ import ChipInput from 'material-ui-chip-input';
 import Button from '@material-ui/core/Button';
 import { createCategory } from "../APIs/Category";
 import { get_uuid } from "../Utility/Firebase"
+import {toast} from "react-toastify";
 
 class AddCategory extends Component {
     constructor(props) {
@@ -56,9 +57,10 @@ class AddCategory extends Component {
     }
 
     handleSubmit(event) {
+        event.preventDefault();
         const { createCategory } = this.props
         const { name, contain_tags, do_not_contain_tags } = this.state
-
+        toast.info(`Created new category "${name}"`);
         createCategory({
             user_id: get_uuid(),
             category_name: name,
@@ -70,7 +72,6 @@ class AddCategory extends Component {
             do_not_contain_tags: [],
             name: ""
         })
-        event.preventDefault();
     }
 
     changeHandler = event => {
