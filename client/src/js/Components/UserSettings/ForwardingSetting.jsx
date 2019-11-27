@@ -40,30 +40,30 @@ const ForwardingSettingView = () => {
 
     const uuid = get_uuid();
 
-    useEffect(() => {
-        console.log("here");
-        /**
-         * Fetch all settings for the given user
-         * @returns {Promise<void>}
-         */
-        const fetchSettings = async () => {
-            const fs_obj = await UserSettingsAPIService.fetchForwardingSettings(uuid);
-            var forwarding_settings = [];
-            var default_integration = null;
-            if (fs_obj != null){
-                forwarding_settings = fs_obj.forwarding_settings;
-                default_integration = fs_obj.default_integration;
-            }
-            console.log(forwarding_settings, default_integration);
-            setFS(forwarding_settings);
-            const integrationType = default_integration.forwarding_app || 1;
-            setIT(integrationType);
-            const currentFS = getFSByIntegrationType(forwarding_settings, integrationType);
-            console.log(currentFS);
-            setID(currentFS ? currentFS.id || null : null)
-            setApiKey(currentFS ? currentFS.api_key || "" : null);
-            setProject(currentFS ? currentFS.default_forwarding_url || "" : null)
+    /**
+     * Fetch all settings for the given user
+     * @returns {Promise<void>}
+     */
+    const fetchSettings = async () => {
+        const fs_obj = await UserSettingsAPIService.fetchForwardingSettings(uuid);
+        var forwarding_settings = [];
+        var default_integration = null;
+        if (fs_obj != null){
+            forwarding_settings = fs_obj.forwarding_settings;
+            default_integration = fs_obj.default_integration;
         }
+        console.log(forwarding_settings, default_integration);
+        setFS(forwarding_settings);
+        const integrationType = default_integration.forwarding_app || 1;
+        setIT(integrationType);
+        const currentFS = getFSByIntegrationType(forwarding_settings, integrationType);
+        console.log(currentFS);
+        setID(currentFS ? currentFS.id || null : null)
+        setApiKey(currentFS ? currentFS.api_key || "" : "");
+        setProject(currentFS ? currentFS.default_forwarding_url || "" : "")
+    }
+
+    useEffect(() => {
         fetchSettings();
     }, [uuid]);
 
@@ -88,17 +88,11 @@ const ForwardingSettingView = () => {
     }
 
     const onSaveClick = (e) => {
-        var createdFS;
         if (id != null) {
-            createdFS = UserSettingsAPIService.updateForwardingSetting(apiKey, project, id, uuid);
+            UserSettingsAPIService.updateForwardingSetting(apiKey, project, id, uuid).then(createdFS => {fetchSettings();});
         }
         else {
-            createdFS = UserSettingsAPIService.createForwardingSetting(apiKey, project, it, uuid);
-        }
-        if (createdFS != null) {
-            setID(createdFS.id)
-            setApiKey(createdFS.api_key || "");
-            setProject(createdFS.default_forwarding_url || "");
+            UserSettingsAPIService.createForwardingSetting(apiKey, project, it, uuid).then(createdFS => {fetchSettings();});
         }
     }
 

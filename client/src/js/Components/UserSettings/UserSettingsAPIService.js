@@ -40,7 +40,7 @@ export default {
     },
     updateForwardingSetting: async (api_key, default_forwarding_url, id, uuid) => {
         try {
-            const forwarding_settings = await axiosObj.patch(`/forwarding_settings/${id}`, {
+            const forwarding_settings = await axiosObj.post(`/forwarding_settings/${id}`, {
                 api_key,
                 default_forwarding_url,
                 id

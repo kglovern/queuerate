@@ -38,6 +38,10 @@ def create_new_forwarding_settings():
 
         )
         db.session.add(forwarding_settings)
+
+        # # update the default integration
+        # user = User.query.filter_by(uuid=forwarding_settings.user_id).first()
+        # user.default_integration.add(forwarding_settings)
         db.session.commit()
         return APIResponseBuilder.success({
             "forwarding_settings": forwarding_settings
@@ -48,7 +52,7 @@ def create_new_forwarding_settings():
         return APIResponseBuilder.error(f"Error encountered: {e}")
 
 
-@fs_controller.route('/<forwarding_settings_id>', methods=['PATCH'])
+@fs_controller.route('/<forwarding_settings_id>', methods=['POST'])
 def update_forwarding_settings(forwarding_settings_id):
     """
     Update a forwarding_settings represented by forwarding_settings_id.
@@ -65,9 +69,23 @@ def update_forwarding_settings(forwarding_settings_id):
         if forwarding_settings:
             forwarding_settings.api_key = data['api_key']
             forwarding_settings.default_forwarding_url = data['default_forwarding_url']
+
+            new_fs = ForwardingSettings(
+                user_id=forwarding_settings.user_id,
+                forwarding_app=forwarding_settings.forwarding_app,
+                api_key=data["api_key"],
+                default_forwarding_url=data['default_forwarding_url'],
+
+            )
+            ForwardingSettings.query.filter_by(id=forwarding_settings_id).delete()
+            db.session.add(new_fs)
+
+            # # update the default integration
+            # user = User.query.filter_by(uuid=forwarding_settings.user_id).first()
+            # forwarding_settings.user_di = user
             db.session.commit()
             return APIResponseBuilder.success({
-                "forwarding_settings": forwarding_settings
+                "forwarding_settings": new_fs
             })
         else:
             return APIResponseBuilder.failure({
@@ -87,7 +105,7 @@ def delete_forwarding_settings(forwarding_settings_id):
     :return: JSON boolean representing whether the user was successfully create
     """
     try:
-        forwarding_settings = Link.query.filter_by(id=forwarding_settings_id).delete()
+        forwarding_settings = ForwardingSettings.query.filter_by(id=forwarding_settings_id).delete()
         db.session.commit()
         if forwarding_settings:
             return APIResponseBuilder.success({
