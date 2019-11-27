@@ -4,7 +4,7 @@ from celery.exceptions import CeleryError
 from bs4 import BeautifulSoup
 from app.models import Category, Link, ProcessingState, RelevantKeyword, User, ForwardingSettings, ThirdPartyIntegration
 from app.integrations import integrations
-from app import db, app
+from app import db
 import requests
 import pke
 import re
@@ -15,7 +15,7 @@ logger = get_task_logger(__name__)
 
 # Setup celery connection
 
-celery = Celery('curations', broker=app.config["CELERY_BROKER_URL"])
+celery = Celery('curations', broker="pyamqp://guest@localhost/")
 #celery.conf.update(app.config)
 
 
